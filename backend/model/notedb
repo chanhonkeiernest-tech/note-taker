@@ -1,1 +1,18 @@
 const mongo = require('mongoose');
+
+const noteschema = new mongoose.Schema({
+    title: {
+        type: String,
+        require:true,
+        minlength: [1, 'Title cannot be empty'],
+        trim: true
+    },
+    text: {
+        type: String,
+        trim: true
+    }
+}, { timestamps: true });
+
+const notedb = mongoose.model('note', noteschema);
+
+module.exports = notedb;

@@ -3,37 +3,41 @@ const cors = require('cors');
 const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
-const todoRoutes = require('./routes/todoRoutes');
-const connectDB = require('./config/db');
+const apiroute = require('./routes/apiroute');
+const connectdb = require('./database/config');
 
 app.use(express.json());
+app.use(cors());
 
-const prompt = inquirer.createPromptModule();
-
-
-
+connectdb();
 
 
-async function newnotenetry() {
-    const entry= await prompt([
-         {
-            type: "input",
-            message: "Title",
+app.use('/note', apiroute);
+// const prompt = inquirer.createPromptModule();
+
+
+
+
+// async function newnotenetry() {
+//     const entry= await prompt([
+//          {
+//             type: "input",
+//             message: "Title",
             
-        },
-        {
-            type: "input",
-            message: "Note"
+//         },
+//         {
+//             type: "input",
+//             message: "Note"
             
-        }
-    ])
-    console.log("\nResponse received:", response);
-    const postData = {
-        text: entry.input
+//         }
+//     ])
+//     console.log("\nResponse received:", response);
+//     const postData = {
+//         text: entry.input
         
-      };
+//       };
 
-}
+// }
 
 
 app.listen(PORT, () =>
