@@ -23,7 +23,8 @@ async function getnotes(name) {
     try {
         const response = await fetch(url + "/" +name);
         const result = await response.json();
-        if(result.title==null){
+        
+        if(result.title==null||JSON.stringify(result)==="{}"){
             window.alert("cannot find note");
         }else{
             editingtext=result.title;
@@ -70,12 +71,15 @@ async function noteentry(errorsource){
             const result = await response.json();
             
             if (!response.ok) {
+                if(400<=response.status<500)noteentry("badT");
+                else throw new Error(`HTTP Error: ${response.status}`);
+                
+                
+            }else{
                 window.alert("new note saved");
                 editingtext=newtitle;
                 
                 document.getElementById("notetitle").innerHTML=editingtext;
-            }else{
-                noteentry("badT");
             }
         }else if (newtitle!=null){
             const data = {
@@ -92,12 +96,16 @@ async function noteentry(errorsource){
             const result = await response.json();
 
             if (!response.ok) {
-                window.alert("new note saved");
+                if(400<=response.status<500){
+                    editingtext=null;
+                    document.getElementById("notetitle").innerHTML=``;
+                    noteentry("noT");
+                }else{
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
                 
             }else{
-                editingtext=null;
-                document.getElementById("notetitle").innerHTML=``;
-                noteentry("noT");
+                window.alert("new note saved");
                 
             }
         }
@@ -138,7 +146,9 @@ async function renamenote(errorsource){
                     document.getElementById("notetitle").innerHTML=newtitle;
                 }
             }else{
-                renamenote(badT)
+                if(400==response.status)renamenote(badT);
+                else throw new Error(`HTTP Error: ${response.status}`);
+                
             }
         }
         
