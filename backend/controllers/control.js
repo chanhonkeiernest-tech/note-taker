@@ -48,19 +48,23 @@ const newnote = async(req, res) => {
     }
 };
 
-const updatenotenote = async(req, res) => {
+const updatenote = async(req, res) => {
     try{
         const {title, text} = req.body;
+        const resultnote = await note.find({title});
+        // console.log(resultnote);
         if(title==null||title==""||checkdonotexist(title)==true){
             res.status(400).json({ error: 'title do not exist' });
         }else{
-            const updatednote = await note.update({title},
+            const updatednote = await note.findOneAndUpdate({title},
                 {
-                    $set: {
+                    
+                    $set:{
                         text
                     }
-                });
-            if(updatednote)res.status(200).json(updatednote);
+                    
+                },{new: true});
+            if(updatednote)return res.status(200).json(updatednote);
             else return res.status(404).json({ error: 'updatefail' });
         }
     }catch (error){
@@ -79,7 +83,7 @@ const any = async(req, res) => {
 };
 
 
-function checkdonotexist (entry){
+async function checkdonotexist (entry){
     if(entry==null)return false;
     const resultnote = await note.find({title: entry});
     if(JSON.stringify(resultnote)==="{}") return true;
@@ -96,5 +100,6 @@ module.exports = {
   getnote,
   newnote,
   renamenote,
+  updatenote,
   any,
 };
