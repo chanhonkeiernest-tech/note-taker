@@ -1,6 +1,6 @@
 const mongo = require('mongoose');
 
-const noteschema = new mongoose.Schema({
+const noteschema = new mongo.Schema({
     title: {
         type: String,
         require:true,
@@ -13,6 +13,6 @@ const noteschema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-const notedb = mongoose.model('note', noteschema);
+const notedb = mongo.model('note', noteschema);
 
 module.exports = notedb;
