@@ -75,7 +75,28 @@ const updatenote = async(req, res) => {
 };
 
 const renamenote = async(req, res) => {
-    res.json("list")
+    try{
+        const {title, text} = req.body;
+        const resultnote = await note.find({title});
+        // console.log(resultnote);
+        if(title==null||title==""||checkdonotexist(title)==true){
+            res.status(400).json({ error: 'title do not exist' });
+        }else{
+            const updatednote = await note.findOneAndUpdate({title},
+                {
+                    
+                    $set:{
+                        text
+                    }
+                    
+                },{new: true});
+            if(updatednote)return res.status(200).json(updatednote);
+            else return res.status(404).json({ error: 'updatefail' });
+        }
+    }catch (error){
+        res.status(500).json({ error: 'Server error' });
+    }
+    
 };
      
 const any = async(req, res) => {

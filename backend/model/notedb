@@ -10,8 +10,10 @@ const noteschema = new mongo.Schema({
     text: {
         type: String,
         trim: true
-    }
-}, { timestamps: true });
+    },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "account" },
+
+    }, { timestamps: true });
 
 const notedb = mongo.model('note', noteschema);
 

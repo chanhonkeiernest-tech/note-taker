@@ -10,7 +10,7 @@ async function allnotes() {
         const display = document.getElementById("notes");
         let output=``;
         result.forEach(note =>{
-            output+= `<li onclick=getnotes(${note.title})>${note.title} <button onclick="rename()">rename</button> </li>\n`
+            output+= `<li onclick=getnotes(${note.title})>${note.title} <button onclick=renamenote(${note.title}, "")>rename</button> </li>\n`
         });
         display.innerHTML=output;
 
@@ -91,7 +91,7 @@ async function noteentry(errorsource){
                 headers: {
                     'Content-Type': 'application/json'  
                 },
-                body: JSON.stringify(postData)
+                body: JSON.stringify(data)
             });
             const result = await response.json();
 
@@ -115,7 +115,7 @@ async function noteentry(errorsource){
 
 }
 
-async function renamenote(errorsource){
+async function renamenote(old, errorsource){
     try{
         let newtitle;
         if(errorsource=="badT"){
@@ -126,7 +126,8 @@ async function renamenote(errorsource){
 
         if(newtitle!=null){
             const data = {
-                title: newtitle
+                oldtitle: old,
+                newtitle: newtitle
                 
             }
             const response = await fetch('renameurl', {
@@ -146,7 +147,7 @@ async function renamenote(errorsource){
                     document.getElementById("notetitle").innerHTML=newtitle;
                 }
             }else{
-                if(400==response.status)renamenote(badT);
+                if(400==response.status)renamenote(old, badT);
                 else throw new Error(`HTTP Error: ${response.status}`);
                 
             }
