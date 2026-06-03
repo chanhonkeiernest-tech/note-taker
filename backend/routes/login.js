@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const control = require('../controllers/control');
-const control = require('passport');
+const passport = require('passport');
 
 router.post("/register", async (req, res) => {
   // Extract the username and password from the request body.

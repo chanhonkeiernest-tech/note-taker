@@ -6,15 +6,21 @@ const PORT = process.env.PORT || 3000;
 const apiroute = require('./routes/apiroute');
 const loginroute = require('./routes/login');
 const connectdb = require('./database/config');
+const passport = require('passport');
+const session = require('express-session');
+ require("./passportconfig.js");
 
 app.use(express.json());
 app.use(cors());
 
 connectdb();
 
+app.use(passport.initialize());
+
+app.use(passport.session());
 
 app.use('/note', apiroute);
-app.use('/login', loginroute);
+app.use('/start', loginroute);
 // const prompt = inquirer.createPromptModule();
 
 
