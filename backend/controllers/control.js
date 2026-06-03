@@ -1,8 +1,11 @@
 const note = require('../model/notedb');
-
+const account = require('../model/accountdb');
 const allnotes=async (req, res) => {
     try{
-        const listofnotes= await note.find();
+        const currentuser=await account.find({username : req.user.username});
+        const listofnotes= await note.find({user:currentuser}).select("-user");
+       
+        
         res.json(listofnotes);
     }catch (error){
         res.status(500).json({ error: 'Server error' });
@@ -16,7 +19,9 @@ const getnote=async (req, res) => {
         if(entry==null||entry==""){
             res.json({});
         }else{
-            const resultnote = await note.find({ title : entry});
+            const currentuser=await account.find({username : req.user.username});
+            
+            const resultnote = await note.find({ title : entry, user:currentuser});
             res.json(resultnote);
         }
 
@@ -30,13 +35,14 @@ const getnote=async (req, res) => {
 const newnote = async(req, res) => {
     try{
         const {title, text} = req.body;
-
+        const currentuser=await account.find({username : req.user.username});
         if(title==null||title==""||checkdonotexist(title)==false){
             res.status(400).json({ error: 'bad title' });
         }else{
             const creatednote = new note({
                 title, 
-                text
+                text,
+                user :currentuser
             });
 
             await creatednote.save();
@@ -51,7 +57,8 @@ const newnote = async(req, res) => {
 const updatenote = async(req, res) => {
     try{
         const {title, text} = req.body;
-        const resultnote = await note.find({title});
+        const currentuser=await account.find({username : req.user.username});
+        const resultnote = await note.find({title, user:currentuser});
         // console.log(resultnote);
         if(title==null||title==""||checkdonotexist(title)==true){
             res.status(400).json({ error: 'title do not exist' });
@@ -77,7 +84,8 @@ const updatenote = async(req, res) => {
 const renamenote = async(req, res) => {
     try{
         const {title, text} = req.body;
-        const resultnote = await note.find({title});
+        const currentuser=await account.find({username : req.user.username});
+        const resultnote = await note.find({title, user: currentuser});
         // console.log(resultnote);
         if(title==null||title==""||checkdonotexist(title)==true){
             res.status(400).json({ error: 'title do not exist' });

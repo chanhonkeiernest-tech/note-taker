@@ -4,6 +4,7 @@ const app = express();
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 const apiroute = require('./routes/apiroute');
+const loginroute = require('./routes/login');
 const connectdb = require('./database/config');
 
 app.use(express.json());
@@ -13,6 +14,7 @@ connectdb();
 
 
 app.use('/note', apiroute);
+app.use('/login', loginroute);
 // const prompt = inquirer.createPromptModule();
 
 
