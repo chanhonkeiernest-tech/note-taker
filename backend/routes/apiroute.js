@@ -1,6 +1,7 @@
-const express = require('express');
+import express from 'express';
+import control from '../controllers/control.js';
+
 const router = express.Router();
-const control = require('../controllers/control');
 
 function ensureAuthenticated(req, res, next) {
   
@@ -20,4 +21,4 @@ router.put('/list',ensureAuthenticated, control.updatenote);
 router.put('/rename',ensureAuthenticated, control.renamenote);
 //router.get('*',ensureAuthenticated, control.any);
 
-module.exports = router;
+export default router; 

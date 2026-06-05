@@ -1,7 +1,7 @@
-const mongo = require('mongoose');
-const bcrypt = require("bcrypt");
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const accountschema = new mongo.Schema({
+const accountschema = new mongoose.Schema({
     username: {
         type: String,
         require:true,
@@ -33,6 +33,6 @@ accountschema.methods.passwordCheck = async function (password) {
 };
 
 
-const accountdb = mongo.model('account', accountschema);
+const accountdb = mongoose.model("accountdb", accountschema);
 
-module.exports = accountdb;
+export default accountdb;

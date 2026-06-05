@@ -1,9 +1,9 @@
-const note = require('../model/notedb');
-const account = require('../model/accountdb');
+import note from '../model/notedb';
+import account from '../model/accountdb';
 const allnotes=async (req, res) => {
     try{
         const currentuser=await account.find({username : req.user.username});
-        const listofnotes= await note.find({user:currentuser}).select("-user");
+        const listofnotes= await note.find({user:currentuser._id}).select("-user");
        
         
         res.json(listofnotes);
@@ -21,7 +21,7 @@ const getnote=async (req, res) => {
         }else{
             const currentuser=await account.find({username : req.user.username});
             
-            const resultnote = await note.find({ title : entry, user:currentuser});
+            const resultnote = await note.find({ title : entry, user:currentuser_id});
             res.json(resultnote);
         }
 
@@ -34,36 +34,39 @@ const getnote=async (req, res) => {
 
 const newnote = async(req, res) => {
     try{
+        const finduser=req.user.username;
+        
         const {title, text} = req.body;
-        const currentuser=await account.find({username : req.user.username});
-        if(title==null||title==""||checkdonotexist(title)==false){
+        const currentuser=await account.find({username : finduser});
+        if(title==null||title==""||checkdonotexist(title, currentuser._id)==false){
             res.status(400).json({ error: 'bad title' });
         }else{
             const creatednote = new note({
                 title, 
                 text,
-                user :currentuser
+                user :currentuser._id
             });
-
+            
             await creatednote.save();
-            res.status(201).json(creatednote);
+            res.status(201).json({status:"created"});
         }
 
     }catch (error){
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: error.message  });
     }
 };
 
 const updatenote = async(req, res) => {
     try{
         const {title, text} = req.body;
+        console.log(req.user.username);
         const currentuser=await account.find({username : req.user.username});
-        const resultnote = await note.find({title, user:currentuser});
+        // const resultnote = await note.find({title, user:currentuser._id});
         // console.log(resultnote);
-        if(title==null||title==""||checkdonotexist(title)==true){
+        if(title==null||title==""||checkdonotexist(title,currentuser._id)==true){
             res.status(400).json({ error: 'title do not exist' });
         }else{
-            const updatednote = await note.findOneAndUpdate({title},
+            const updatednote = await note.findOneAndUpdate({title,user:currentuser._id},
                 {
                     
                     $set:{
@@ -75,7 +78,7 @@ const updatenote = async(req, res) => {
             else return res.status(404).json({ error: 'updatefail' });
         }
     }catch (error){
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: error.message });
     }
     
 
@@ -87,10 +90,10 @@ const renamenote = async(req, res) => {
         const currentuser=await account.find({username : req.user.username});
         const resultnote = await note.find({title, user: currentuser});
         // console.log(resultnote);
-        if(title==null||title==""||checkdonotexist(title)==true){
+        if(title==null||title==""||checkdonotexist(title, currentuser._id)==true){
             res.status(400).json({ error: 'title do not exist' });
         }else{
-            const updatednote = await note.findOneAndUpdate({title},
+            const updatednote = await note.findOneAndUpdate({title, user:currentuser._id},
                 {
                     
                     $set:{
@@ -112,9 +115,9 @@ const any = async(req, res) => {
 };
 
 
-async function checkdonotexist (entry){
+async function checkdonotexist (entry, id){
     if(entry==null)return false;
-    const resultnote = await note.find({title: entry});
+    const resultnote = await note.find({title: entry, user:id});
     if(JSON.stringify(resultnote)==="{}") return true;
     else return false;
 
@@ -124,7 +127,7 @@ async function checkdonotexist (entry){
 
 
 
-module.exports = {
+export default {
   allnotes,
   getnote,
   newnote,

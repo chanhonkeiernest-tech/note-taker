@@ -1,6 +1,6 @@
-const mongo = require('mongoose');
+import mongoose from 'mongoose';
 
-const noteschema = new mongo.Schema({
+const noteschema = new mongoose.Schema({
     title: {
         type: String,
         require:true,
@@ -11,10 +11,10 @@ const noteschema = new mongo.Schema({
         type: String,
         trim: true
     },
-    user: { type: mongo.Schema.Types.ObjectId, ref: "account" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "accounts" },
 
     }, { timestamps: true });
 
-const notedb = mongo.model('note', noteschema);
+const notedb = mongoose.model('note', noteschema);
 
-module.exports = notedb;
+export default notedb;

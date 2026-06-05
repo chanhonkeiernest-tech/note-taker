@@ -1,7 +1,9 @@
-const express = require('express');
+import express from 'express';
+import control from '../controllers/control.js';
+import passport from 'passport';
+import User from '../model/accountdb';
+
 const router = express.Router();
-const control = require('../controllers/control');
-const passport = require('passport');
 
 router.post("/register", async (req, res) => {
   // Extract the username and password from the request body.
@@ -47,4 +49,4 @@ router.get("/logout", (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

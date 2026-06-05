@@ -1,6 +1,6 @@
-const passport = require('passport');
+import passport from 'passport';
 import { Strategy as LocalStrategy } from "passport-local";
-import User from "./model/accountdb.js";
+import User from "./model/accountdb";
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
@@ -15,7 +15,7 @@ passport.use(
       }
       // If a user is found, check if the provided password is valid for that user.
       // The 'isValidPassword' method is usually defined in the User model.
-      const passwordCheck = await user.isValidPassword(password);
+      const passwordCheck = await user.passwordCheck(password);
       
       if (!passwordCheck) {
        
@@ -26,7 +26,7 @@ passport.use(
       return done(null, user);
     } catch (error) {
       
-      return done("passport error");
+      return done(error.message);
     }
   })
 );
