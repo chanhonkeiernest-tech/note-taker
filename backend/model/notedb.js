@@ -17,16 +17,16 @@ const noteschema = new mongoose.Schema({
 
 
 // Virtuals are computed properties available on the document but not persisted.
-noteschema.virtual("user").get(function () {
-  if (!this.content) return "";
-  return this.content.length > 20
-    ? hashPassword+ "..."
-    : this.content;
-});
+// noteschema.virtual("user").get(function () {
+//   if (!this.content) return "";
+//   return this.content.length > 20
+//     ? hashPassword+ "..."
+//     : this.content;
+// });
 
 
 // Ensure virtuals are included 
-noteschema.set("toJSON", { virtuals: true });
+//noteschema.set("toJSON", { virtuals: true });
 
 const notedb = mongoose.model('note', noteschema);
 

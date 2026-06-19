@@ -1,6 +1,31 @@
 const url="http://localhost:3001/list";
 const renameurl="http://localhost:3001/rename";
-let editingtext=null;
+var editingtext=null;
+
+async function login() {
+     try {
+      // Making a GET request to fetch data from the server
+    
+      const response = await fetch(`http://localhost:3001/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+      
+      
+      if (!response.ok) { //check response
+        throw new Error('Network response was not ok');
+      }
+  
+      // Parse the response body as JSON
+      const data = await response.json();
+      
+    
+    } catch (error) {
+      // Handle any errors that occur during the fetch process
+      console.error('Error with async/await:', error);
+    }
+}
 
 async function allnotes() {
     try {
