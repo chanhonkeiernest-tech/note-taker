@@ -1,9 +1,9 @@
-import note from '../model/notedb';
-import account from '../model/accountdb';
+import note from '../model/notedb.js';
+import account from '../model/accountdb.js';
 const allnotes=async (req, res) => {
     try{
         const currentuser=await account.find({username : req.user.username});
-        const listofnotes= await note.find({user:currentuser._id}).select("-user");
+        const listofnotes= await note.find({user:currentuser._id});
        
         
         res.json(listofnotes);

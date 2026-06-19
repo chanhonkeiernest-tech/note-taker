@@ -40,14 +40,15 @@ app.use(
 app.use(express.json());
 app.use(cors());
 
-connectdb();
+
 
 app.use(passport.initialize());
 
 app.use(passport.session());
-
-app.use('/note', apiroute);
+connectdb();
 app.use('/start', loginroute);
+app.use('/note', apiroute);
+
 // const prompt = inquirer.createPromptModule();
 
 

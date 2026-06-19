@@ -1,7 +1,7 @@
 import express from 'express';
 import control from '../controllers/control.js';
 import passport from 'passport';
-import User from '../model/accountdb';
+import User from '../model/accountdb.js';
 
 const router = express.Router();
 
