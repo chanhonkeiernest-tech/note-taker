@@ -1,5 +1,5 @@
 const url="http://localhost:3001/note/list";
-const renameurl="http://localhost:3001/rename";
+const renameurl="http://localhost:3001/note/rename";
 var editingtext=null;
 
 async function login() {
@@ -32,15 +32,27 @@ async function login() {
 
 async function allnotes() {
     try {
-
-        const response = await fetch(url);
+        //console.log("here");
+        const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'  
+                },
+            });
+        
         const result = await response.json();
+        //console.log(result);
         const display = document.getElementById("notes");
         let output=``;
         result.forEach(note =>{
-            output+= `<li onclick=getnotes(${note.title})>${note.title} <button onclick=renamenote(${note.title}, "")>rename</button> </li>\n`
+            output+= `<li>${note.title} <button id="${note.title}" onclick="renamenote(this.id)">rename</button> </li>\n`
+            
         });
         display.innerHTML=output;
+        // const buttonListener = document.querySelectorAll();
+        // buttonListener.forEach(button=>{
+        //     button.addEventListener('click', renamenote(document.getElementById("but"),null))
+        // })
 
    } catch (error) {
     console.error("Error fetching list of notes:", error);
@@ -145,18 +157,21 @@ async function noteentry(errorsource){
 
 }
 
-async function renamenote(old, errorsource){
+async function renamenote(old){
     try{
-        let newtitle;
-        if(errorsource=="badT"){
-            while(newtitle==null||newtitle=="")newtitle = prompt("This title has already been use please reenter", "");
-        }else{
-            while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
-        }
+        console.log(old);
+         let newtitle=null;
+        // let old =document.getElementById(event.target.id);
+        // if(errorsource=="badT"){
+        //     while(newtitle==null||newtitle=="")newtitle = prompt("This title has already been use please reenter", "");
+        // }else{
+             while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
+        // }
 
         if(newtitle!=null){
+            //console.log(old.text);
             const data = {
-                oldtitle: old,
+                oldtitle: old.toString(),
                 newtitle: newtitle
                 
             }
@@ -170,14 +185,19 @@ async function renamenote(old, errorsource){
 
             const result = await response.json();
 
-            if (!response.ok) {
+            if (response.ok) {
                 window.alert("rename successful");
                 allnotes();
-                if(result.title==editingtext){
-                    document.getElementById("notetitle").innerHTML=newtitle;
-                }
+                // if(result.title==editingtext){
+                //     document.getElementById("notetitle").innerHTML=newtitle;
+                // }
             }else{
-                if(400==response.status)renamenote(old, "badT");
+                if(400==response.status){
+                    window.alert("please try other title");
+                    //renamenote(old, "badT");
+                }else if(501==response.status){
+                    window.alert("title do not exist");
+                }
                 else throw new Error(`HTTP Error: ${response.status}`);
                 
             }

@@ -91,22 +91,29 @@ const updatenote = async(req, res) => {
 
 const renamenote = async(req, res) => {
     try{
-        const {title, text} = req.body;
+        const {oldtitle, newtitle} = req.body;
         const currentuser=await account.findOne({username : req.user.username});
-        const resultnote = await note.find({title, user: currentuser._id});
-        const check = await checkdonotexist(title, currentuser._id);
-        // console.log(resultnote);
-        if(title==null||title==""||check===true){
-            res.status(400).json({ error: 'title do not exist' });
+        //const resultnote = await note.find({oldtitle, user: currentuser._id});
+        const checkold = await checkdonotexist(oldtitle, currentuser._id);
+        const checknew = await checkdonotexist(newtitle, currentuser._id);
+        
+        console.log(oldtitle);
+        console.log(newtitle);
+        if(checkold===true)res.status(501).json({ error: 'title problem' });
+        if(newtitle==null||newtitle==""||checknew===false){
+            res.status(400).json({ error: 'title problem' });
         }else{
-            const updatednote = await note.findOneAndUpdate({title, user:currentuser._id},
-                {
-                    
-                    $set:{
-                        title: text
-                    }
-                    
-                },{ returnDocument: 'after'});
+            
+            const target = {title: oldtitle, user:currentuser._id};
+            const update = {
+                $set: {
+                    title: newtitle
+                }
+            };
+            const updatednote = await note.findOneAndUpdate(target, update, {
+                returnDocument: 'after'
+            });
+            
             if(updatednote)return res.status(200).json(updatednote);
             else return res.status(404).json({ error: 'updatefail' });
         }
