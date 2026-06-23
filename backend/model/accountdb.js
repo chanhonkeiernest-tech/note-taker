@@ -33,6 +33,6 @@ accountschema.methods.passwordCheck = async function (password) {
 };
 
 
-const accountdb = mongoose.model("accountdb", accountschema);
+const accountdb = mongoose.model('accountdb', accountschema);
 
 export default accountdb;

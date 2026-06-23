@@ -1,15 +1,16 @@
-const url="http://localhost:3001/list";
+const url="http://localhost:3001/note/list";
 const renameurl="http://localhost:3001/rename";
 var editingtext=null;
 
 async function login() {
      try {
       // Making a GET request to fetch data from the server
-    
-      const response = await fetch(`http://localhost:3001/login`, {
+     const username = document.getElementById("username");
+     const password = document.getElementById("password");
+      const response = await fetch(`http://localhost:3001/start/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username: username.value, password: password.value }),
     });
       
       
@@ -19,7 +20,9 @@ async function login() {
   
       // Parse the response body as JSON
       const data = await response.json();
-      
+      if (data.message=="Login successful"){
+        location.replace("http://localhost:3001/index.html")
+      }
     
     } catch (error) {
       // Handle any errors that occur during the fetch process
@@ -68,8 +71,9 @@ async function getnotes(name) {
 async function noteentry(errorsource){
 
     try {
+        var newtitle=null;
         if(editingtext==null){
-            let newtitle;
+            
             if(errorsource=="badT"){
                 while(newtitle==null||newtitle=="")newtitle = prompt("This title has already been use please reenter", "");
                 
@@ -81,17 +85,17 @@ async function noteentry(errorsource){
         }
         if(editingtext==null&&newtitle!=null){
             
-            
+            console.log(document.getElementById("entry").value);
             const data = {
                 title: newtitle,
-                text=document.getElementById("myTextArea").textContent
+                text: document.getElementById("entry").value
             }
-            const response = await fetch('url', {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'  
                 },
-                body: JSON.stringify(postData)
+                body: JSON.stringify(data)
             });
             const result = await response.json();
             
@@ -106,12 +110,13 @@ async function noteentry(errorsource){
                 
                 document.getElementById("notetitle").innerHTML=editingtext;
             }
-        }else if (newtitle!=null){
+        }else if (newtitle==null){
+            console.log(document.getElementById("entry").value);
             const data = {
                 title: editingtext,
-                text=document.getElementById("myTextArea").textContent
+                text: document.getElementById("entry").value
             }
-            const response = await fetch('url', {
+            const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'  
@@ -155,12 +160,12 @@ async function renamenote(old, errorsource){
                 newtitle: newtitle
                 
             }
-            const response = await fetch('renameurl', {
+            const response = await fetch(renameurl, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'  
                 },
-                body: JSON.stringify(postData)
+                body: JSON.stringify(data)
             });
 
             const result = await response.json();
@@ -172,7 +177,7 @@ async function renamenote(old, errorsource){
                     document.getElementById("notetitle").innerHTML=newtitle;
                 }
             }else{
-                if(400==response.status)renamenote(old, badT);
+                if(400==response.status)renamenote(old, "badT");
                 else throw new Error(`HTTP Error: ${response.status}`);
                 
             }
@@ -192,3 +197,5 @@ async function newnote(){
     const textforedit = document.getElementById("entry");
     textforedit.innerHTML=``;
 }
+
+

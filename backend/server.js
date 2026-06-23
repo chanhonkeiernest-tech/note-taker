@@ -46,6 +46,10 @@ app.use(passport.initialize());
 
 app.use(passport.session());
 connectdb();
+
+// Serve static files from the Frontend folder
+app.use(express.static('../Frontend'));
+
 app.use('/start', loginroute);
 app.use('/note', apiroute);
 
