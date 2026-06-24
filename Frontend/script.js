@@ -254,23 +254,31 @@ async function removenote(name) {
     try {
         //name=name.toString();
         //const response = await fetch(url + "/" +name.toString());
+        const data = {
+                title: name.toString()
+            }
         const response = await fetch(removeurl, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'  
                 },
-                body: {title: name.toString()}
+                body: JSON.stringify(data)
             });
         const result = await response.json();
         console.log(JSON.stringify(result));
-        if(result.title==null||JSON.stringify(result)==={}){
-            window.alert("cannot find note");
+        if(response.ok){
+            allnotes();
+            if(editingtext==name.toString()){
+                editingtext=null;
+                const display = document.getElementById("notetitle");
+                display.innerHTML="unsaved notes";
+                const textforedit = document.getElementById("entry").value="";
+                //textforedit.innerHTML="";
+            }
+            window.alert("note removed");
+
         }else{
-            editingtext=result.title;
-            const display = document.getElementById("notetitle");
-            display.innerHTML=editingtext;
-            const textforedit = document.getElementById("entry");
-            textforedit.innerHTML=result.text;
+            window.alert("remoeve fail");
         }
 
 
@@ -279,7 +287,7 @@ async function removenote(name) {
     }
 }
 
-async function newnote(){
+async function cleartext(){
     editingtext=null;
     const display = document.getElementById("notetitle");
     display.innerHTML=``;

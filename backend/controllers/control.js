@@ -124,6 +124,28 @@ const renamenote = async(req, res) => {
     }
     
 };
+
+const removenote =async (req, res) => {
+    try{
+        const {title} = req.body;
+        //console.log("check");
+        const currentuser=await account.findOne({username : req.user.username});
+         const check = await checkdonotexist(title, currentuser._id);
+         if(check==true) res.status(402).json("no such  note to delete");
+        if(title==null||title==""){
+            res.json({});
+        }else{
+            const currentuser=await account.findOne({username : req.user.username});
+            
+            const resultnote = await note.deleteOne({ title, user:currentuser._id});
+            console.log(resultnote);
+            res.status(201).json("removed");
+        }
+
+    }catch (error){
+        res.status(500).json({ error: 'Server error' });
+    }
+};
      
 const any = async(req, res) => {
     res.json("list")
@@ -152,5 +174,6 @@ export default {
   newnote,
   renamenote,
   updatenote,
+  removenote,
   any,
 };
