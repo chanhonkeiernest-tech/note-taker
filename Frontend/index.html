@@ -4,28 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo List</title>
-  <link rel="stylesheet" href="style.css">
+
 </head>
-<body>
+<body onload="allnotes()">
   <div class="titlearea">
     
-    <label id="notetitle">Unsaved notes </label>
+    <label id="notetitle">Unsaved notes </label>  <button onclick="newnote()">New note</button>
     <!-- <textarea id="name"></textarea> -->
   </div>  
   <div class="textarea">
 
  
-    <textarea id="entry">
-    It was a dark and stormy night...
-    </textarea>
+    <textarea id="entry"></textarea>
   </div> 
-
+  <button onclick="noteentry()">Save</button>
+  
   <div >
-      <ul id="notes">
+      <ul id="notes" >
 
       </ul>
   </div>
-  <button>Save</button> 
   <script src="script.js"></script>
 </body>
 </html>

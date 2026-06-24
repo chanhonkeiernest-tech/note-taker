@@ -1,12 +1,25 @@
-const express = require('express');
+import express from 'express';
+import control from '../controllers/control.js';
+
 const router = express.Router();
-const control = require('../controllers/control');
 
-router.get('/list',control.allnotes);
-router.get('/list/:name',control.getnote);
-router.post('/list', control.newnote);
-router.put('/list', control.updatenote);
-router.put('/rename', control.renamenote);
-//router.get('*',control.any);
+function ensureAuthenticated(req, res, next) {
+  
+  if (req.isAuthenticated()) {
+    
+    return next();
+  }
+  
+  res.status(401).json({ message: "Unauthorized" });
+}
 
-module.exports = router;
+
+router.get('/list', ensureAuthenticated,control.allnotes);
+router.get('/list/:name',ensureAuthenticated,control.getnote);
+router.post('/list',ensureAuthenticated, control.newnote);
+router.put('/list',ensureAuthenticated, control.updatenote);
+router.put('/rename',ensureAuthenticated, control.renamenote);
+router.delete('/remove',ensureAuthenticated, control.removenote);
+//router.get('*',ensureAuthenticated, control.any);
+
+export default router; 
