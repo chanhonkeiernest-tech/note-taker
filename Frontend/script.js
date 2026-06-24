@@ -66,6 +66,24 @@ async function register() {
       console.error('Error with async/await:', error);
     }
 }
+async function geteditingtext(){
+        try {
+            if(editingtext==null)return null;
+            const response = await fetch(url + "/" +editingtext);
+            const result = await response.json();
+                
+            if(result.title==null||JSON.stringify(result)==={}){
+                return null
+            }else{
+                
+                return result.text.toString();   
+            }
+            return null
+        } catch (error) {
+            return null;
+        }
+    }
+
 
 async function allnotes() {
     try {
@@ -97,7 +115,33 @@ async function allnotes() {
 }
 
 async function getnotes(name) {
+    
+
     try {
+
+        
+        let nochange =false;
+        const gettext=await geteditingtext();
+        const currententry=document.getElementById("entry").value;
+        console.log(document.getElementById("entry").value);
+         console.log(gettext);
+        if(currententry===gettext){
+            nochange=true;
+        }
+        if(editingtext==null&&currententry===""){
+            nochange=true;
+        }  
+        if(nochange==false){
+            if(window.confirm("You will loss your save")){
+                
+            }else{
+                return null;
+            }
+        }else{
+
+        }
+
+
         //name=name.toString();
         const response = await fetch(url + "/" +name.toString());
         const result = await response.json();
@@ -108,8 +152,8 @@ async function getnotes(name) {
             editingtext=result.title;
             const display = document.getElementById("notetitle");
             display.innerHTML=editingtext;
-            const textforedit = document.getElementById("entry");
-            textforedit.innerHTML=result.text;
+            //const textforedit = document.getElementById("entry");
+            document.getElementById("entry").value=result.text;
         }
 
 
@@ -287,12 +331,35 @@ async function removenote(name) {
     }
 }
 
-async function cleartext(){
-    editingtext=null;
-    const display = document.getElementById("notetitle");
-    display.innerHTML=``;
-    const textforedit = document.getElementById("entry");
-    textforedit.innerHTML=``;
+async function newnote(){
+
+  
+        let nochange =false;
+        const gettext=await geteditingtext();
+            if(document.getElementById("entry").value===gettext){
+                nochange=true;
+            }
+            if(editingtext==null&&document.getElementById("entry").value===""){
+                nochange=true;
+            }    
+           
+
+
+        
+        if(nochange==false){
+            if(window.confirm("You will loss your save")){
+                const display = document.getElementById("notetitle");
+                display.innerHTML="unsaved notes";
+                const textforedit = document.getElementById("entry").value="";
+                editingtext=null;
+            }
+            
+        }else{
+            const display = document.getElementById("notetitle");
+            display.innerHTML="unsaved notes";
+            const textforedit = document.getElementById("entry").value="";
+            editingtext=null;
+        }   
+    
+    
 }
-
-

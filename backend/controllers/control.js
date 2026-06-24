@@ -138,8 +138,9 @@ const removenote =async (req, res) => {
             const currentuser=await account.findOne({username : req.user.username});
             
             const resultnote = await note.deleteOne({ title, user:currentuser._id});
-            console.log(resultnote);
+            //check = await checkdonotexist(title, currentuser._id);
             res.status(201).json("removed");
+            
         }
 
     }catch (error){
