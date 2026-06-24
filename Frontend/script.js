@@ -1,5 +1,6 @@
 const url="http://localhost:3001/note/list";
 const renameurl="http://localhost:3001/note/rename";
+const removeurl="http://localhost:3001/note/remove";
 var editingtext=null;
 
 async function login() {
@@ -30,6 +31,42 @@ async function login() {
     }
 }
 
+
+async function register() {
+     try {
+      // Making a GET request to fetch data from the server
+     const username = document.getElementById("new username");
+     const password = document.getElementById("new password");
+     const cpassword = document.getElementById("new confirm password");
+     if(password.value!=cpassword.value){
+        window.alert("password do not match")
+     }else{
+        const response = await fetch(`http://localhost:3001/start/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: username.value, password: password.value }),
+        });
+      
+      
+        if (!response.ok) { //check response
+            throw new Error('register fail');
+            window.alert("register fail try again")
+        }
+  
+      // Parse the response body as JSON
+        const data = await response.json();
+        if (data.message=="User created"){
+            location.replace("http://localhost:3001/index.html")
+        }
+     }
+      
+    
+    } catch (error) {
+      // Handle any errors that occur during the fetch process
+      console.error('Error with async/await:', error);
+    }
+}
+
 async function allnotes() {
     try {
         //console.log("here");
@@ -45,7 +82,7 @@ async function allnotes() {
         const display = document.getElementById("notes");
         let output=``;
         result.forEach(note =>{
-            output+= `<li>${note.title} <button id="${note.title}" onclick="renamenote(this.id)">rename</button> <button id="${note.title}" onclick="getnotes(this.id)">edit note</button> </li>\n`
+            output+= `<li>${note.title} <button id="${note.title}" onclick="renamenote(this.id)">rename</button> <button id="${note.title}" onclick="getnotes(this.id)">edit note</button> <button id="${note.title}" onclick="removenote(this.id)">remove note</button></li>\n`
             
         });
         display.innerHTML=output;
@@ -122,6 +159,7 @@ async function noteentry(errorsource){
                 editingtext=newtitle;
                 
                 document.getElementById("notetitle").innerHTML=editingtext;
+                allnotes();
             }
         }else if (newtitle==null){
             console.log(document.getElementById("entry").value);
@@ -209,6 +247,35 @@ async function renamenote(old){
 
     }catch (error) {
         console.error("Error in renaming:", error);
+    }
+}
+
+async function removenote(name) {
+    try {
+        //name=name.toString();
+        //const response = await fetch(url + "/" +name.toString());
+        const response = await fetch(removeurl, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'  
+                },
+                body: {title: name.toString()}
+            });
+        const result = await response.json();
+        console.log(JSON.stringify(result));
+        if(result.title==null||JSON.stringify(result)==={}){
+            window.alert("cannot find note");
+        }else{
+            editingtext=result.title;
+            const display = document.getElementById("notetitle");
+            display.innerHTML=editingtext;
+            const textforedit = document.getElementById("entry");
+            textforedit.innerHTML=result.text;
+        }
+
+
+    } catch (error) {
+        console.error("Error fetching note:", error);
     }
 }
 

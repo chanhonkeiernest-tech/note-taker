@@ -19,6 +19,7 @@ router.get('/list/:name',ensureAuthenticated,control.getnote);
 router.post('/list',ensureAuthenticated, control.newnote);
 router.put('/list',ensureAuthenticated, control.updatenote);
 router.put('/rename',ensureAuthenticated, control.renamenote);
+router.delete('/remove',ensureAuthenticated, control.removenote);
 //router.get('*',ensureAuthenticated, control.any);
 
 export default router; 
