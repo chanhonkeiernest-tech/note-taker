@@ -16,13 +16,15 @@ const allnotes=async (req, res) => {
 const getnote=async (req, res) => {
     try{
         const entry=req.params.name;
+        
         if(entry==null||entry==""){
             res.json({});
         }else{
             const currentuser=await account.findOne({username : req.user.username});
             
-            const resultnote = await note.find({ title : entry, user:currentuser._id});
-            res.json(resultnote);
+            const resultnote = await note.findOne({ title : entry, user:currentuser._id});
+            console.log(resultnote);
+            res.status(201).json(resultnote);
         }
 
     }catch (error){

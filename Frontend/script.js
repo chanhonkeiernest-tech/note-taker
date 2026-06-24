@@ -45,7 +45,7 @@ async function allnotes() {
         const display = document.getElementById("notes");
         let output=``;
         result.forEach(note =>{
-            output+= `<li>${note.title} <button id="${note.title}" onclick="renamenote(this.id)">rename</button> </li>\n`
+            output+= `<li>${note.title} <button id="${note.title}" onclick="renamenote(this.id)">rename</button> <button id="${note.title}" onclick="getnotes(this.id)">edit note</button> </li>\n`
             
         });
         display.innerHTML=output;
@@ -61,10 +61,11 @@ async function allnotes() {
 
 async function getnotes(name) {
     try {
-        const response = await fetch(url + "/" +name);
+        //name=name.toString();
+        const response = await fetch(url + "/" +name.toString());
         const result = await response.json();
-        
-        if(result.title==null||JSON.stringify(result)==="{}"){
+        console.log(JSON.stringify(result));
+        if(result.title==null||JSON.stringify(result)==={}){
             window.alert("cannot find note");
         }else{
             editingtext=result.title;
@@ -186,11 +187,12 @@ async function renamenote(old){
             const result = await response.json();
 
             if (response.ok) {
-                window.alert("rename successful");
+                
                 allnotes();
-                // if(result.title==editingtext){
-                //     document.getElementById("notetitle").innerHTML=newtitle;
-                // }
+                if(editingtext==old.toString()){
+                    document.getElementById("notetitle").innerHTML=newtitle;
+                }
+                window.alert("rename successful");
             }else{
                 if(400==response.status){
                     window.alert("please try other title");
