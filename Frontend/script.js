@@ -56,7 +56,7 @@ async function register() {
       // Parse the response body as JSON
         const data = await response.json();
         if (data.message=="User created"){
-            location.replace("http://localhost:3001/index.html")
+            location.replace("http://localhost:3001/login.html")
         }
      }
       
@@ -273,7 +273,9 @@ async function renamenote(old){
                 allnotes();
                 if(editingtext==old.toString()){
                     document.getElementById("notetitle").innerHTML=newtitle;
+                    editingtext=newtitle;
                 }
+                
                 window.alert("rename successful");
             }else{
                 if(400==response.status){
