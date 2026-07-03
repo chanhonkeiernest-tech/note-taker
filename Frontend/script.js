@@ -68,6 +68,7 @@ async function register() {
 }
 async function geteditingtext(){
         try {
+            
             if(editingtext==null)return null;
             const response = await fetch(url + "/" +editingtext);
             const result = await response.json();
@@ -88,6 +89,7 @@ async function geteditingtext(){
 async function allnotes() {
     try {
         //console.log("here");
+        
         const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -119,7 +121,7 @@ async function getnotes(name) {
 
     try {
 
-        
+        event.preventDefault();
         let nochange =false;
         const gettext=await geteditingtext();
         const currententry=document.getElementById("entry").value;
@@ -165,6 +167,7 @@ async function getnotes(name) {
 async function noteentry(errorsource){
 
     try {
+        event.preventDefault();
         var newtitle=null;
         if(editingtext==null){
             
@@ -242,6 +245,7 @@ async function noteentry(errorsource){
 
 async function renamenote(old){
     try{
+        event.preventDefault();
         console.log(old);
          let newtitle=null;
         // let old =document.getElementById(event.target.id);
@@ -298,6 +302,7 @@ async function renamenote(old){
 
 async function removenote(name) {
     try {
+        event.preventDefault();
         //name=name.toString();
         //const response = await fetch(url + "/" +name.toString());
         const data = {
@@ -334,7 +339,7 @@ async function removenote(name) {
 }
 
 async function newnote(){
-
+        event.preventDefault();
   
         let nochange =false;
         const gettext=await geteditingtext();
