@@ -44,7 +44,7 @@ async function register() {
         const response = await fetch(`http://localhost:3001/start/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username.value, password: password.value }),
+        body: JSON.stringify({ username: username.value, password: password.value, cpassword:cpassword.value }),
         });
       
       
@@ -56,7 +56,12 @@ async function register() {
       // Parse the response body as JSON
         const data = await response.json();
         if (data.message=="User created"){
-            location.replace("http://localhost:3001/login.html")
+            const response = await fetch(`http://localhost:3001/start/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: username.value, password: password.value }),
+            });
+             location.replace("http://localhost:3001/index.html")
         }
      }
       
@@ -167,7 +172,7 @@ async function getnotes(name) {
 async function noteentry(errorsource){
 
     try {
-        event.preventDefault();
+        //event.preventDefault();
         var newtitle=null;
         if(editingtext==null){
             
