@@ -22,7 +22,7 @@ async function login() {
       // Parse the response body as JSON
       const data = await response.json();
       if (data.message=="Login successful"){
-        location.replace("http://localhost:3001/index.html")
+        location.replace("index.html")
       }
     
     } catch (error) {
@@ -61,7 +61,7 @@ async function register() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: username.value, password: password.value }),
             });
-             location.replace("http://localhost:3001/index.html")
+             location.replace("index.html")
         }
      }
       
@@ -103,7 +103,7 @@ async function allnotes() {
             });
         
         const result = await response.json();
-        //console.log(result);
+        console.log(result);
         const display = document.getElementById("notes");
         let output=``;
         result.forEach(note =>{
@@ -177,12 +177,21 @@ async function noteentry(errorsource){
         if(editingtext==null){
             
             if(errorsource=="badT"){
-                while(newtitle==null||newtitle=="")newtitle = prompt("This title has already been use please reenter", "");
+                while(newtitle==null||newtitle==""){
+                    newtitle = prompt("This title has already been use please reenter", "");
+                    if(newtitle===null)break;
+                }
                 
             }else if (errorsource=="noT"){
-                while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
+                while(newtitle==null||newtitle==""){
+                    newtitle = prompt("Please enter new note title", "");
+                    if(newtitle===null)break;
+                }
             }else{
-                while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
+                while(newtitle==null||newtitle==""){
+                    newtitle = prompt("Please enter new note title", "");
+                    if(newtitle===null)break;
+                }
             }
         }
         if(editingtext==null&&newtitle!=null){
@@ -213,7 +222,7 @@ async function noteentry(errorsource){
                 document.getElementById("notetitle").innerHTML=editingtext;
                 allnotes();
             }
-        }else if (newtitle==null){
+        }else if (editingtext!=null&&newtitle==null){
             console.log(document.getElementById("entry").value);
             const data = {
                 title: editingtext,
