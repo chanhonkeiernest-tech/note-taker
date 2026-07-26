@@ -8,9 +8,10 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   // Extract the username and password from the request body.
  
-  const { username, password } = req.body;
+  const { username, password, cpassword } = req.body;
   try {
     // The 'hashPassword' method is assumed to be a static method on the User model.
+    if(password!=cpassword)res.status(402).json({ message: "Password does not match", error: error.message });
     const hashedpassword = await User.hashing(password);
     // Create a new user instance with the username and the hashed password.
     const newUser = new User({ username, password: hashedpassword });

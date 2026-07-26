@@ -2,6 +2,12 @@ const url="http://localhost:3001/note/list";
 const renameurl="http://localhost:3001/note/rename";
 const removeurl="http://localhost:3001/note/remove";
 var editingtext=null;
+var listofnote=[];
+var sortoption ="title";
+var sortorder ="ase";
+var searchQuery ="";
+document.getElementById("title").style.backgroundColor = "red";
+document.getElementById("ase").style.backgroundColor = "red";
 
 async function login() {
      try {
@@ -22,7 +28,7 @@ async function login() {
       // Parse the response body as JSON
       const data = await response.json();
       if (data.message=="Login successful"){
-        location.replace("http://localhost:3001/index.html")
+        location.replace("index.html")
       }
     
     } catch (error) {
@@ -44,7 +50,7 @@ async function register() {
         const response = await fetch(`http://localhost:3001/start/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username.value, password: password.value }),
+        body: JSON.stringify({ username: username.value, password: password.value, cpassword:cpassword.value }),
         });
       
       
@@ -56,7 +62,12 @@ async function register() {
       // Parse the response body as JSON
         const data = await response.json();
         if (data.message=="User created"){
-            location.replace("http://localhost:3001/login.html")
+            const response = await fetch(`http://localhost:3001/start/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username: username.value, password: password.value }),
+            });
+             location.replace("index.html")
         }
      }
       
@@ -68,6 +79,7 @@ async function register() {
 }
 async function geteditingtext(){
         try {
+            
             if(editingtext==null)return null;
             const response = await fetch(url + "/" +editingtext);
             const result = await response.json();
@@ -88,7 +100,14 @@ async function geteditingtext(){
 async function allnotes() {
     try {
         //console.log("here");
-        const response = await fetch(url, {
+        searchQuery=  document.getElementById("search").value;
+        //const response = await fetch(url + "/" +sortoption + "/" +sortorder, {
+      
+        var linkURL=url + "?sortType=" +sortoption + "&order=" +sortorder;
+        if (searchQuery!==""){
+            linkURL+="&title="+searchQuery;
+        }
+        const response = await fetch(linkURL, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'  
@@ -96,13 +115,30 @@ async function allnotes() {
             });
         
         const result = await response.json();
-        //console.log(result);
+        console.log(result);
+        listofnote=result;
         const display = document.getElementById("notes");
+       
+        //let count=1;
         let output=``;
-        result.forEach(note =>{
-            output+= `<li>${note.title} <button id="${note.title}" onclick="renamenote(this.id)">rename</button> <button id="${note.title}" onclick="getnotes(this.id)">edit note</button> <button id="${note.title}" onclick="removenote(this.id)">remove note</button></li>\n`
+        var page=1;
+       document.getElementById("page").innerHTML=page;
+        for(i=0;i<listofnote.length;i++){
             
-        });
+            if(page*5-5<=i&&i<page*5){
+                title=listofnote[i].title;
+                output+= `<li>`+title+ `<button id="`+title+`" onclick="renamenote(this.id)">rename</button> <button id="`+title+`" onclick="getnotes(this.id)">edit note</button> <button id="`+title+`" onclick="removenote(this.id)">remove note</button></li>\n`
+
+            }
+            
+        }
+        // listofnote.forEach((note, count, page) =>{
+        //     console.log(page);
+        //     if(5*page-5<=count<5*page){
+
+        //     }
+        //     count++;
+        // });
         display.innerHTML=output;
         // const buttonListener = document.querySelectorAll();
         // buttonListener.forEach(button=>{
@@ -119,7 +155,7 @@ async function getnotes(name) {
 
     try {
 
-        
+        event.preventDefault();
         let nochange =false;
         const gettext=await geteditingtext();
         const currententry=document.getElementById("entry").value;
@@ -165,16 +201,26 @@ async function getnotes(name) {
 async function noteentry(errorsource){
 
     try {
+        //event.preventDefault();
         var newtitle=null;
         if(editingtext==null){
             
             if(errorsource=="badT"){
-                while(newtitle==null||newtitle=="")newtitle = prompt("This title has already been use please reenter", "");
+                while(newtitle==null||newtitle==""){
+                    newtitle = prompt("This title has already been use please reenter", "");
+                    if(newtitle===null)break;
+                }
                 
             }else if (errorsource=="noT"){
-                while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
+                while(newtitle==null||newtitle==""){
+                    newtitle = prompt("Please enter new note title", "");
+                    if(newtitle===null)break;
+                }
             }else{
-                while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
+                while(newtitle==null||newtitle==""){
+                    newtitle = prompt("Please enter new note title", "");
+                    if(newtitle===null)break;
+                }
             }
         }
         if(editingtext==null&&newtitle!=null){
@@ -205,7 +251,7 @@ async function noteentry(errorsource){
                 document.getElementById("notetitle").innerHTML=editingtext;
                 allnotes();
             }
-        }else if (newtitle==null){
+        }else if (editingtext!=null&&newtitle==null){
             console.log(document.getElementById("entry").value);
             const data = {
                 title: editingtext,
@@ -225,13 +271,16 @@ async function noteentry(errorsource){
                     editingtext=null;
                     document.getElementById("notetitle").innerHTML=``;
                     noteentry("noT");
+                    
                 }else{
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
                 
             }else{
                 window.alert("new note saved");
-                
+                if(document.getElementById("search").value!==searchQuery){
+                    allnotes();
+                }
             }
         }
     } catch (error) {
@@ -242,6 +291,7 @@ async function noteentry(errorsource){
 
 async function renamenote(old){
     try{
+        event.preventDefault();
         console.log(old);
          let newtitle=null;
         // let old =document.getElementById(event.target.id);
@@ -298,6 +348,7 @@ async function renamenote(old){
 
 async function removenote(name) {
     try {
+        event.preventDefault();
         //name=name.toString();
         //const response = await fetch(url + "/" +name.toString());
         const data = {
@@ -334,7 +385,7 @@ async function removenote(name) {
 }
 
 async function newnote(){
-
+        event.preventDefault();
   
         let nochange =false;
         const gettext=await geteditingtext();
@@ -364,4 +415,86 @@ async function newnote(){
         }   
     
     
+}
+async function prevpage(){
+    const display = document.getElementById("notes");
+    const currentpage = document.getElementById("page").innerHTML;
+    page=currentpage;
+    page--;
+    console.log(page>0&&page*5-listofnote.length<=5);
+    if(page>0&&page*5-listofnote.length<5){
+        let count=1;
+        let output=``;
+        for(i=0;i<listofnote.length;i++){
+            
+            if(page*5-5<=i&&i<page*5){
+                title=listofnote[i].title;
+                output+= `<li>`+title+ `<button id="`+title+`" onclick="renamenote(this.id)">rename</button> <button id="`+title+`" onclick="getnotes(this.id)">edit note</button> <button id="`+title+`" onclick="removenote(this.id)">remove note</button></li>\n`
+
+            }
+            
+        }
+            
+   
+        display.innerHTML=output;
+        document.getElementById("page").innerHTML=page;
+    }
+    
+    
+}
+async function nextpage(){
+    
+    const display = document.getElementById("notes");
+    var currentpage = document.getElementById("page").innerHTML;
+    page=currentpage;
+    page++;
+    console.log(page);
+    if(page>0&&page*5-listofnote.length<5){
+        let count=1;
+        let output=``;
+        for(i=0;i<listofnote.length;i++){
+            
+            if(page*5-5<=i&&i<page*5){
+                title=listofnote[i].title;
+                output+= `<li>`+title+ `<button id="`+title+`" onclick="renamenote(this.id)">rename</button> <button id="`+title+`" onclick="getnotes(this.id)">edit note</button> <button id="`+title+`" onclick="removenote(this.id)">remove note</button></li>\n`
+
+            }
+            
+        }
+            
+
+        display.innerHTML=output;
+        document.getElementById("page").innerHTML=page;
+    }
+    
+    
+}
+async function sortchange(change) {
+    if(change==="title"&&sortoption!==change){
+        sortoption=change;
+        document.getElementById("title").style.backgroundColor = "red";
+        document.getElementById("time").style.backgroundColor = " rgb(247, 176, 243)";
+
+        allnotes();
+    }else if(change==="timestamps"&&sortoption!==change){
+        sortoption=change;
+        document.getElementById("time").style.backgroundColor = "red";
+        document.getElementById("title").style.backgroundColor = " rgb(247, 176, 243)";
+        allnotes();
+    }else if(change==="ase"&&sortoption!==change){
+        sortorder=change;
+        document.getElementById("ase").style.backgroundColor = "red";
+        document.getElementById("dec").style.backgroundColor = " rgb(247, 176, 243)";
+        allnotes();
+    }else if (change==="dec"&&sortoption!==change){
+        sortorder=change;
+        document.getElementById("dec").style.backgroundColor = "red";
+        document.getElementById("ase").style.backgroundColor = " rgb(247, 176, 243)";
+        allnotes();
+    }
+    
+}
+async function search(){
+    allnotes();
+
 }

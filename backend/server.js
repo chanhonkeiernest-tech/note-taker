@@ -10,7 +10,7 @@ import './passportconfig.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use(cors({ origin: "http://127.0.0.1:5500", credentials: true }));
 app.use(
   session({
     // `secret` is used to sign the session ID cookie. It should be a long, random string kept secret.
@@ -38,7 +38,7 @@ app.use(
 
 
 app.use(express.json());
-app.use(cors());
+
 
 
 

@@ -2,8 +2,30 @@ import note from '../model/notedb.js';
 import account from '../model/accountdb.js';
 const allnotes=async (req, res) => {
     try{
-        const currentuser=await account.findOne({username : req.user.username});
-        const listofnotes= await note.find({user:currentuser._id});
+        const {
+            
+      
+            sortType,
+            order,
+            title,
+      
+        } = req.query;
+        console.log(title);
+        const filter={};
+      
+        if(title){
+            filter.title=RegExp(title, "i");;
+        }
+        const currentuser=await account.findOne({username : req.user.username});  
+        filter.user=currentuser._id;
+        console.log(filter);
+  
+        // const sortType=req.params.sortoption;
+        // const order=req.params.sortorder;
+        const sortOption = {};
+        const sortDirection = order === "ase" ? 1 : -1;
+        sortOption[sortType] = sortDirection;
+        const listofnotes= (await note.find(filter).sort(sortOption));
        
         
         res.json(listofnotes);
