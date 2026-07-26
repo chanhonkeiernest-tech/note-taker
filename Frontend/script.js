@@ -3,6 +3,8 @@ const renameurl="http://localhost:3001/note/rename";
 const removeurl="http://localhost:3001/note/remove";
 var editingtext=null;
 var listofnote=[];
+var sortoption ="title";
+var sortorder ="ase";
 
 async function login() {
      try {
@@ -96,7 +98,7 @@ async function allnotes() {
     try {
         //console.log("here");
         
-        const response = await fetch(url, {
+        const response = await fetch(url + "/" +sortoption + "/" +sortorder, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'  
@@ -453,5 +455,21 @@ async function nextpage(){
         document.getElementById("page").innerHTML=page;
     }
     
+    
+}
+async function sortchange(change) {
+    if(change==="title"&&sortoption!==change){
+        sortoption=change;
+        allnotes();
+    }else if(change==="timestamps"&&sortoption!==change){
+        sortoption=change;
+        allnotes();
+    }else if(change==="ase"&&sortoption!==change){
+        sortorder=change;
+        allnotes();
+    }else if (change==="dec"&&sortoption!==change){
+        sortorder=change;
+        allnotes();
+    }
     
 }

@@ -3,7 +3,12 @@ import account from '../model/accountdb.js';
 const allnotes=async (req, res) => {
     try{
         const currentuser=await account.findOne({username : req.user.username});
-        const listofnotes= await note.find({user:currentuser._id});
+        const sortType=req.params.sortoption;
+        const order=req.params.sortorder;
+        const sortOption = {};
+        const sortDirection = order === "ase" ? 1 : -1;
+        sortOption[sortType] = sortDirection;
+        const listofnotes= (await note.find({user:currentuser._id}).sort(sortOption));
        
         
         res.json(listofnotes);

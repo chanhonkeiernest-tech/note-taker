@@ -14,7 +14,7 @@ function ensureAuthenticated(req, res, next) {
 }
 
 
-router.get('/list', ensureAuthenticated,control.allnotes);
+router.get('/list/:sortoption/:sortorder', ensureAuthenticated,control.allnotes);
 router.get('/list/:name',ensureAuthenticated,control.getnote);
 router.post('/list',ensureAuthenticated, control.newnote);
 router.put('/list',ensureAuthenticated, control.updatenote);

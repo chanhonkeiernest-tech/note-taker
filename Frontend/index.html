@@ -3,31 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="webstyle.css">
   <title>Note</title>
 
 </head>
 <body onload="allnotes()">
-  <div class="user">
-    <header onload="currentuser()"></header>
-  </div>
-  <div class="titlearea">
-    
-    <label id="notetitle">Unsaved notes </label>  <button onclick="newnote()">New note</button>  <button onclick="logout()">Logout</button>
-    <!-- <textarea id="name"></textarea> -->
-  </div>  
-  <div class="textarea">
+      <div class="split"> 
+        <div class="navbar">
+          <p>Sorted by:</p>
+          <nav>
+                      
+                          
+            <li onclick="sortchange('title')">Name</li>
+            <li onclick="sortchange('timestamps')">Date</li>
+            <li onclick="sortchange('ase')">asending order</li>
+            <li onclick="sortchange('dec')">desending order</li>
+                      
+                      
 
- 
-    <textarea id="entry" rows="30" cols="50"></textarea>
-  </div> 
-  <button onclick="noteentry()">Save</button>
-  
-  <div >
-      <ul id="notes" >
+                  
+          </nav>
+        </div>
 
-      </ul>
-      <button onclick="prevpage()">prev</button><p id="page">1</p><button onclick="nextpage()">next</button>
-  
+        <div class="main">
+          <div class="user">
+            <header onload="currentuser()"></header>
+          </div>
+          <div class="titlearea">
+            
+            <label id="notetitle">Unsaved notes </label>  <button onclick="newnote()">New note</button>  <button onclick="logout()">Logout</button>
+            <!-- <textarea id="name"></textarea> -->
+          </div>  
+          <div class="textarea">
+
+        
+            <textarea id="entry" rows="30" cols="50"></textarea>
+          </div> 
+          <button onclick="noteentry()">Save</button>
+          
+          <div >
+              <ul id="notes" >
+
+              </ul>
+              <button onclick="prevpage()">prev</button><p id="page">1</p><button onclick="nextpage()">next</button>
+              
+
+        
+              <textarea id="searching"></textarea>
+          </div>
+        </div>
   </div>
   <script src="script.js"></script>
 </body>
