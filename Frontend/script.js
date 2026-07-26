@@ -22,7 +22,7 @@ async function login() {
       
       
       if (!response.ok) { //check response
-        throw new Error('Network response was not ok');
+        throw new Error('Fail to login');
       }
   
       // Parse the response body as JSON
@@ -33,6 +33,7 @@ async function login() {
     
     } catch (error) {
       // Handle any errors that occur during the fetch process
+       window.alert("login failed");
       console.error('Error with async/await:', error);
     }
 }
@@ -77,19 +78,33 @@ async function register() {
       console.error('Error with async/await:', error);
     }
 }
+async function logout() {
+        const response = await fetch(`http://localhost:3001/start/logout`);
+        const result = await response.json();  
+         if (!response.ok) { //check response
+            throw new Error('fail to logout');
+        }else{
+            location.replace("login.html");
+        }
+        
+}
 async function geteditingtext(){
         try {
             
             if(editingtext==null)return null;
             const response = await fetch(url + "/" +editingtext);
             const result = await response.json();
-                
-            if(result.title==null||JSON.stringify(result)==={}){
-                return null
+            if(!response.ok){
+                if(409==response.status)location.replace("login.html");
             }else{
+                if(result.title==null||JSON.stringify(result)==={}){
+                    return null
+                }else{
                 
-                return result.text.toString();   
+                    return result.text.toString();   
+                }
             }
+            
             return null
         } catch (error) {
             return null;
@@ -113,9 +128,11 @@ async function allnotes() {
                     'Content-Type': 'application/json'  
                 },
             });
-        
+         if(!response.ok){
+            if(409==response.status)location.replace("login.html");
+        }
         const result = await response.json();
-        console.log(result);
+        //console.log(result);
         listofnote=result;
         const display = document.getElementById("notes");
        
@@ -181,6 +198,9 @@ async function getnotes(name) {
         //name=name.toString();
         const response = await fetch(url + "/" +name.toString());
         const result = await response.json();
+        if(!response.ok){
+            if(409==response.status)location.replace("login.html");
+        }
         console.log(JSON.stringify(result));
         if(result.title==null||JSON.stringify(result)==={}){
             window.alert("cannot find note");
@@ -240,8 +260,14 @@ async function noteentry(errorsource){
             const result = await response.json();
             
             if (!response.ok) {
-                if(400<=response.status<500)noteentry("badT");
-                else throw new Error(`HTTP Error: ${response.status}`);
+                if(400==response.status)noteentry("badT");
+                 
+                if(409==response.status)location.replace("login.html");
+            
+                else {
+                     window.alert("fail to save");
+                    throw new Error(`HTTP Error: ${response.status}`);
+                } 
                 
                 
             }else{
@@ -267,12 +293,16 @@ async function noteentry(errorsource){
             const result = await response.json();
 
             if (!response.ok) {
-                if(400<=response.status<500){
+                if(400==response.status){
                     editingtext=null;
                     document.getElementById("notetitle").innerHTML=``;
                     noteentry("noT");
                     
+                } else if (409==response.status){
+                    
+                    location.replace("login.html");
                 }else{
+                    window.alert("cannot edit note");
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
                 
@@ -333,6 +363,9 @@ async function renamenote(old){
                     //renamenote(old, "badT");
                 }else if(501==response.status){
                     window.alert("title do not exist");
+                }else if (
+                    409==response.status){
+
                 }
                 else throw new Error(`HTTP Error: ${response.status}`);
                 
@@ -375,11 +408,19 @@ async function removenote(name) {
             window.alert("note removed");
 
         }else{
+            if(402==response.status){
+                allnotes();
+                window.alert("this note do not exist");
+            }else if (
+                409==response.status){
+
+            }
             window.alert("remoeve fail");
         }
 
 
     } catch (error) {
+        window.alert("remoeve fail");
         console.error("Error fetching note:", error);
     }
 }

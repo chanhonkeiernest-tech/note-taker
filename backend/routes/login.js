@@ -37,17 +37,13 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
 // Define a GET route for user logout at '/logout'.
 router.get("/logout", (req, res) => {
   
-  req.logout((err) => {
-    // The callback function for `req.logout()` receives an error object if something goes wrong.
-    if (err) {
-      // If there's an error during logout, send a 500 (Internal Server Error) status and an error message.
-      return res
-        .status(500)
-        .json({ message: "Logout failed", error: err.message });
-    }
-    // If logout is successful, redirect the user to the homepage (or any other appropriate page).
-    res.redirect("/index.html"); // Assuming index.html is your public homepage
-  });
+   try{
+    req.logout();
+  }catch (error) {
+    // If there's an error (e.g., username already exists, database error), send a 400 (Bad Request) status and an error message.
+    res.status(400).json({ message: "fail to logout", error: error.message });
+  }
+   
 });
 
 export default router;

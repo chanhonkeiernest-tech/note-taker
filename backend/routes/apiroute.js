@@ -10,7 +10,7 @@ function ensureAuthenticated(req, res, next) {
     return next();
   }
   
-  res.status(401).json({ message: "Unauthorized" });
+  res.status(409).json({ message: "Unauthorized" });
 }
 
 
