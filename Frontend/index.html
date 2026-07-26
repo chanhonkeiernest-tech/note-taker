@@ -14,10 +14,10 @@
           <nav>
                       
                           
-            <li onclick="sortchange('title')">Name</li>
-            <li onclick="sortchange('timestamps')">Date</li>
-            <li onclick="sortchange('ase')">asending order</li>
-            <li onclick="sortchange('dec')">desending order</li>
+            <li id="title" onclick="sortchange('title')" >Name</li>
+            <li id="time" onclick="sortchange('timestamps')">Date</li>
+            <li id="ase" onclick="sortchange('ase')">asending order</li>
+            <li id="dec" onclick="sortchange('dec')">desending order</li>
                       
                       
 
@@ -45,11 +45,16 @@
               <ul id="notes" >
 
               </ul>
-              <button onclick="prevpage()">prev</button><p id="page">1</p><button onclick="nextpage()">next</button>
+              <div class="paging">
+                <p id="page">1</p>
+                <button onclick="prevpage()">prev</button><button onclick="nextpage()">next</button>
+              </div>
+              
               
 
         
-              <textarea id="searching"></textarea>
+              <textarea id="search"></textarea>
+              <button onclick="search()">search</button>
           </div>
         </div>
   </div>

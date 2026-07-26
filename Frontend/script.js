@@ -5,6 +5,9 @@ var editingtext=null;
 var listofnote=[];
 var sortoption ="title";
 var sortorder ="ase";
+var searchQuery ="";
+document.getElementById("title").style.backgroundColor = "red";
+document.getElementById("ase").style.backgroundColor = "red";
 
 async function login() {
      try {
@@ -97,8 +100,14 @@ async function geteditingtext(){
 async function allnotes() {
     try {
         //console.log("here");
-        
-        const response = await fetch(url + "/" +sortoption + "/" +sortorder, {
+        searchQuery=  document.getElementById("search").value;
+        //const response = await fetch(url + "/" +sortoption + "/" +sortorder, {
+      
+        var linkURL=url + "?sortType=" +sortoption + "&order=" +sortorder;
+        if (searchQuery!==""){
+            linkURL+="&title="+searchQuery;
+        }
+        const response = await fetch(linkURL, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'  
@@ -262,13 +271,16 @@ async function noteentry(errorsource){
                     editingtext=null;
                     document.getElementById("notetitle").innerHTML=``;
                     noteentry("noT");
+                    
                 }else{
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
                 
             }else{
                 window.alert("new note saved");
-                
+                if(document.getElementById("search").value!==searchQuery){
+                    allnotes();
+                }
             }
         }
     } catch (error) {
@@ -460,16 +472,29 @@ async function nextpage(){
 async function sortchange(change) {
     if(change==="title"&&sortoption!==change){
         sortoption=change;
+        document.getElementById("title").style.backgroundColor = "red";
+        document.getElementById("time").style.backgroundColor = " rgb(247, 176, 243)";
+
         allnotes();
     }else if(change==="timestamps"&&sortoption!==change){
         sortoption=change;
+        document.getElementById("time").style.backgroundColor = "red";
+        document.getElementById("title").style.backgroundColor = " rgb(247, 176, 243)";
         allnotes();
     }else if(change==="ase"&&sortoption!==change){
         sortorder=change;
+        document.getElementById("ase").style.backgroundColor = "red";
+        document.getElementById("dec").style.backgroundColor = " rgb(247, 176, 243)";
         allnotes();
     }else if (change==="dec"&&sortoption!==change){
         sortorder=change;
+        document.getElementById("dec").style.backgroundColor = "red";
+        document.getElementById("ase").style.backgroundColor = " rgb(247, 176, 243)";
         allnotes();
     }
     
+}
+async function search(){
+    allnotes();
+
 }
