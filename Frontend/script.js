@@ -2,6 +2,7 @@ const url="http://localhost:3001/note/list";
 const renameurl="http://localhost:3001/note/rename";
 const removeurl="http://localhost:3001/note/remove";
 var editingtext=null;
+var listofnote=[];
 
 async function login() {
      try {
@@ -104,12 +105,29 @@ async function allnotes() {
         
         const result = await response.json();
         console.log(result);
+        listofnote=result;
         const display = document.getElementById("notes");
+       
+        //let count=1;
         let output=``;
-        result.forEach(note =>{
-            output+= `<li>${note.title} <button id="${note.title}" onclick="renamenote(this.id)">rename</button> <button id="${note.title}" onclick="getnotes(this.id)">edit note</button> <button id="${note.title}" onclick="removenote(this.id)">remove note</button></li>\n`
+        var page=1;
+       document.getElementById("page").innerHTML=page;
+        for(i=0;i<listofnote.length;i++){
             
-        });
+            if(page*5-5<=i&&i<page*5){
+                title=listofnote[i].title;
+                output+= `<li>`+title+ `<button id="`+title+`" onclick="renamenote(this.id)">rename</button> <button id="`+title+`" onclick="getnotes(this.id)">edit note</button> <button id="`+title+`" onclick="removenote(this.id)">remove note</button></li>\n`
+
+            }
+            
+        }
+        // listofnote.forEach((note, count, page) =>{
+        //     console.log(page);
+        //     if(5*page-5<=count<5*page){
+
+        //     }
+        //     count++;
+        // });
         display.innerHTML=output;
         // const buttonListener = document.querySelectorAll();
         // buttonListener.forEach(button=>{
@@ -381,6 +399,59 @@ async function newnote(){
             const textforedit = document.getElementById("entry").value="";
             editingtext=null;
         }   
+    
+    
+}
+async function prevpage(){
+    const display = document.getElementById("notes");
+    const currentpage = document.getElementById("page").innerHTML;
+    page=currentpage;
+    page--;
+    console.log(page>0&&page*5-listofnote.length<=5);
+    if(page>0&&page*5-listofnote.length<5){
+        let count=1;
+        let output=``;
+        for(i=0;i<listofnote.length;i++){
+            
+            if(page*5-5<=i&&i<page*5){
+                title=listofnote[i].title;
+                output+= `<li>`+title+ `<button id="`+title+`" onclick="renamenote(this.id)">rename</button> <button id="`+title+`" onclick="getnotes(this.id)">edit note</button> <button id="`+title+`" onclick="removenote(this.id)">remove note</button></li>\n`
+
+            }
+            
+        }
+            
+   
+        display.innerHTML=output;
+        document.getElementById("page").innerHTML=page;
+    }
+    
+    
+}
+async function nextpage(){
+    
+    const display = document.getElementById("notes");
+    var currentpage = document.getElementById("page").innerHTML;
+    page=currentpage;
+    page++;
+    console.log(page);
+    if(page>0&&page*5-listofnote.length<5){
+        let count=1;
+        let output=``;
+        for(i=0;i<listofnote.length;i++){
+            
+            if(page*5-5<=i&&i<page*5){
+                title=listofnote[i].title;
+                output+= `<li>`+title+ `<button id="`+title+`" onclick="renamenote(this.id)">rename</button> <button id="`+title+`" onclick="getnotes(this.id)">edit note</button> <button id="`+title+`" onclick="removenote(this.id)">remove note</button></li>\n`
+
+            }
+            
+        }
+            
+
+        display.innerHTML=output;
+        document.getElementById("page").innerHTML=page;
+    }
     
     
 }
