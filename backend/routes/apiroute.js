@@ -19,18 +19,19 @@ function ensureAuthenticated(req, res, next) {
  * /note:
  *   get:
  *     summary: get all note belongs to the current user of the session
- *     tags:
- *       - Note
+ *     tags: [Note]
  *     security:
- *       -Passport:[]
+ *       - Passport: []
  *     parameters:
  *       - in: path
  *         sortype: sort based on    
  *         schema:
  *           type: String
+ *       - in: path
  *         order: sort order
  *         schema:
  *           type: String
+ *       - in: path
  *         name: search query
  *         schema:
  *           type: String
@@ -43,14 +44,13 @@ router.get('/note', ensureAuthenticated,control.allnotes);
  * @swagger
  * /note:
  *   get:
- *     summary: get all note belongs to the current user of the session
- *     tags:
- *       - Note
+ *     summary: get a specific note belongs to the current user of the session
+ *     tags: [Note]
  *     security:
- *       -Passport:[]
+ *       - Passport: []
  *     parameters:
  *       - in: path
- *         name: title
+ *         name: name
  *         required: true
  *         schema:
  *           type: String
@@ -63,16 +63,16 @@ router.get('/note/:name',ensureAuthenticated,control.getnote);
  * @swagger
  * /note:
  *   post:
- *     summary: Get user by ID
- *     tags:
- *       - User
+ *     summary: create new note
+ *     tags: [Note]
  *     security:
- *       -Passport:[]
+ *       - Passport: []
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/newNote'    
+ *             $ref: '#/components/schemas/newNote'
  *     responses:
  *       200:
  *         description: OK
@@ -82,16 +82,16 @@ router.post('/note',ensureAuthenticated, control.newnote);
  * @swagger
  * /note:
  *   put:
- *     summary: Get user by ID
- *     tags:
- *       - User
+ *     summary: Update an existing note
+ *     tags: [Note]
  *     security:
- *       -Passport:[]
+ *       - Passport: []
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/note'    
+ *             $ref: '#/components/schemas/updatenote'
  *     responses:
  *       200:
  *         description: OK
@@ -99,18 +99,18 @@ router.post('/note',ensureAuthenticated, control.newnote);
 router.put('/note',ensureAuthenticated, control.updatenote);
 /**
  * @swagger
- * /name:
- *   post:
+ * /note:
+ *   put:
  *     summary: Get user by ID
- *     tags:
- *       - User
+ *     tags: [Note]
  *     security:
- *       -Passport:[]
+ *       - Passport: []
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/rename'    
+ *             $ref: '#/components/schemas/rename'
  *     responses:
  *       200:
  *         description: OK
@@ -118,18 +118,18 @@ router.put('/note',ensureAuthenticated, control.updatenote);
 router.put('/name',ensureAuthenticated, control.renamenote);
 /**
  * @swagger
- * /name:
- *   post:
- *     summary: Get user by ID
- *     tags:
- *       - User
+ * /note:
+ *   delete:
+ *     summary: remove a note
+ *     tags: [Note]
  *     security:
- *       -Passport:[]
+ *       - Passport: []
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/delete'    
+ *             $ref: '#/components/schemas/delete'
  *     responses:
  *       200:
  *         description: OK
