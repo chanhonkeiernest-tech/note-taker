@@ -7,6 +7,8 @@ import connectdb from './database/config.js';
 import passport from 'passport';
 import session from 'express-session';
 import './passportconfig.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './config/swagger.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -39,6 +41,7 @@ app.use(
 
 app.use(express.json());
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // load the swagger ui page on the provided endpoint with the swagger spec we have configured
 
 
 
@@ -50,8 +53,8 @@ connectdb();
 // Serve static files from the Frontend folder
 app.use(express.static('../Frontend'));
 
-app.use('/start', loginroute);
-app.use('/note', apiroute);
+app.use('/note', loginroute);
+app.use('/', apiroute);
 
 // const prompt = inquirer.createPromptModule();
 

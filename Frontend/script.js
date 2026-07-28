@@ -1,6 +1,6 @@
-const url="http://localhost:3001/note/list";
-const renameurl="http://localhost:3001/note/rename";
-const removeurl="http://localhost:3001/note/remove";
+const url="http://localhost:3001/note";
+const renameurl="http://localhost:3001/name";
+
 var editingtext=null;
 var listofnote=[];
 var sortoption ="title";
@@ -14,7 +14,7 @@ async function login() {
       // Making a GET request to fetch data from the server
      const username = document.getElementById("username");
      const password = document.getElementById("password");
-      const response = await fetch(`http://localhost:3001/start/login`, {
+      const response = await fetch(`http://localhost:3001/note/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username.value, password: password.value }),
@@ -48,7 +48,7 @@ async function register() {
      if(password.value!=cpassword.value){
         window.alert("password do not match")
      }else{
-        const response = await fetch(`http://localhost:3001/start/register`, {
+        const response = await fetch(`http://localhost:3001/note/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.value, password: password.value, cpassword:cpassword.value }),
@@ -63,7 +63,7 @@ async function register() {
       // Parse the response body as JSON
         const data = await response.json();
         if (data.message=="User created"){
-            const response = await fetch(`http://localhost:3001/start/login`, {
+            const response = await fetch(`http://localhost:3001/note/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: username.value, password: password.value }),
@@ -79,13 +79,19 @@ async function register() {
     }
 }
 async function logout() {
-        const response = await fetch(`http://localhost:3001/start/logout`);
-        const result = await response.json();  
+    try{
+        const response = await fetch(`http://localhost:3001/note/logout`);
+        // const result = await response.json(); 
+        console.log(response.ok) ;
          if (!response.ok) { //check response
             throw new Error('fail to logout');
         }else{
             location.replace("login.html");
         }
+    }catch(error){
+        console.error('Error with async/await and fail to logout:', error);
+    }
+        
         
 }
 async function geteditingtext(){
@@ -387,7 +393,7 @@ async function removenote(name) {
         const data = {
                 title: name.toString()
             }
-        const response = await fetch(removeurl, {
+        const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'  

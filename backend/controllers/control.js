@@ -1,5 +1,9 @@
 import note from '../model/notedb.js';
 import account from '../model/accountdb.js';
+
+
+
+
 const allnotes=async (req, res) => {
     try{
         const {
@@ -18,7 +22,7 @@ const allnotes=async (req, res) => {
         }
         const currentuser=await account.findOne({username : req.user.username});  
         filter.user=currentuser._id;
-        console.log(filter);
+        
   
         // const sortType=req.params.sortoption;
         // const order=req.params.sortorder;

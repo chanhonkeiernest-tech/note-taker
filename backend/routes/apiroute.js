@@ -14,12 +14,127 @@ function ensureAuthenticated(req, res, next) {
 }
 
 
-router.get('/list', ensureAuthenticated,control.allnotes);
-router.get('/list/:name',ensureAuthenticated,control.getnote);
-router.post('/list',ensureAuthenticated, control.newnote);
-router.put('/list',ensureAuthenticated, control.updatenote);
-router.put('/rename',ensureAuthenticated, control.renamenote);
-router.delete('/remove',ensureAuthenticated, control.removenote);
+/**
+ * @swagger
+ * /note:
+ *   get:
+ *     summary: get all note belongs to the current user of the session
+ *     tags:
+ *       - Note
+ *     security:
+ *       -Passport:[]
+ *     parameters:
+ *       - in: path
+ *         sortype: sort based on    
+ *         schema:
+ *           type: String
+ *         order: sort order
+ *         schema:
+ *           type: String
+ *         name: search query
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.get('/note', ensureAuthenticated,control.allnotes);
+/**
+ * @swagger
+ * /note:
+ *   get:
+ *     summary: get all note belongs to the current user of the session
+ *     tags:
+ *       - Note
+ *     security:
+ *       -Passport:[]
+ *     parameters:
+ *       - in: path
+ *         name: title
+ *         required: true
+ *         schema:
+ *           type: String
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.get('/note/:name',ensureAuthenticated,control.getnote);
+/**
+ * @swagger
+ * /note:
+ *   post:
+ *     summary: Get user by ID
+ *     tags:
+ *       - User
+ *     security:
+ *       -Passport:[]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/newNote'    
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.post('/note',ensureAuthenticated, control.newnote);
+/**
+ * @swagger
+ * /note:
+ *   put:
+ *     summary: Get user by ID
+ *     tags:
+ *       - User
+ *     security:
+ *       -Passport:[]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/note'    
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.put('/note',ensureAuthenticated, control.updatenote);
+/**
+ * @swagger
+ * /name:
+ *   post:
+ *     summary: Get user by ID
+ *     tags:
+ *       - User
+ *     security:
+ *       -Passport:[]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/rename'    
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.put('/name',ensureAuthenticated, control.renamenote);
+/**
+ * @swagger
+ * /name:
+ *   post:
+ *     summary: Get user by ID
+ *     tags:
+ *       - User
+ *     security:
+ *       -Passport:[]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/delete'    
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.delete('/note',ensureAuthenticated, control.removenote);
 //router.get('*',ensureAuthenticated, control.any);
 
 export default router; 
