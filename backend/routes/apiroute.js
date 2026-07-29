@@ -99,7 +99,7 @@ router.post('/note',ensureAuthenticated, control.newnote);
 router.put('/note',ensureAuthenticated, control.updatenote);
 /**
  * @swagger
- * /note:
+ * /name:
  *   put:
  *     summary: Get user by ID
  *     tags: [Note]

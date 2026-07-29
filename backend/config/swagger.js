@@ -43,10 +43,21 @@ const options = {
           properties: {
             // Fields in the user object
             id: { type: "integer", example: 1 }, // User ID (auto-generated)
-            username: { type: "string", example: "John Doe" }, // User name
-            password: { type: "string", example: "dsj2sal43kq1ke" },
+            username: { type: "string", example: "Jon" }, // User name
+            password: { type: "string", example: "1234" },
           },
           required: ["username", "password"], // need username and password to create new user
+        },
+        newaccount: {
+          type: "object", // It's an object
+          properties: {
+            // Fields in the user object
+            id: { type: "integer", example: 1 }, // User ID (auto-generated)
+            username: { type: "string", example: "Jon" }, // User name
+            password: { type: "string", example: "1234" },
+            confirm_password: { type: "string", example: "1234" },
+          },
+          required: ["username", "password", "confirm_password"], // need username and password to create new user
         },
         note: {
           type: "object", // It's an object

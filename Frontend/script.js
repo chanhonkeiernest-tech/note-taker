@@ -14,7 +14,7 @@ async function login() {
       // Making a GET request to fetch data from the server
      const username = document.getElementById("username");
      const password = document.getElementById("password");
-      const response = await fetch(`http://localhost:3001/note/login`, {
+      const response = await fetch(`http://localhost:3001/note/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username.value, password: password.value }),
@@ -48,7 +48,7 @@ async function register() {
      if(password.value!=cpassword.value){
         window.alert("password do not match")
      }else{
-        const response = await fetch(`http://localhost:3001/note/register`, {
+        const response = await fetch(`http://localhost:3001/note/newuser`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.value, password: password.value, cpassword:cpassword.value }),
@@ -63,7 +63,7 @@ async function register() {
       // Parse the response body as JSON
         const data = await response.json();
         if (data.message=="User created"){
-            const response = await fetch(`http://localhost:3001/note/login`, {
+            const response = await fetch(`http://localhost:3001/note/user`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: username.value, password: password.value }),
@@ -80,7 +80,7 @@ async function register() {
 }
 async function logout() {
     try{
-        const response = await fetch(`http://localhost:3001/note/logout`);
+        const response = await fetch(`http://localhost:3001/note/nouser`);
         // const result = await response.json(); 
         console.log(response.ok) ;
          if (!response.ok) { //check response

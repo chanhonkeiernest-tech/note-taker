@@ -5,7 +5,28 @@ import User from '../model/accountdb.js';
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
+
+
+/**
+ * @swagger
+ * /note/newuser:
+ *   post:
+ *     summary: Register a new user
+ *     tags:
+ *       - Account
+ *     security:
+ *       - Passport: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/account'
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.post("/newuser", async (req, res) => {
   // Extract the username and password from the request body.
  
   const { username, password, cpassword } = req.body;
@@ -25,8 +46,26 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
-router.post("/login", passport.authenticate("local"), (req, res) => {
+/**
+ * @swagger
+ * /note/user:
+ *   post:
+ *     summary: Login a user
+ *     tags:
+ *       - Account
+ *     security:
+ *       - Passport: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/newaccount'
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.post("/user", passport.authenticate("local"), (req, res) => {
   
   res.json({
     message: "Login successful",
@@ -34,8 +73,23 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
   });
 });
 
+
+/**
+ * @swagger
+ * /note/nouser:
+ *   get:
+ *     summary: Register a new user
+ *     tags:
+ *       - Account
+ *     security:
+ *       - Passport: []
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+
 // Define a GET route for user logout at '/logout'.
-router.get("/logout", (req, res) => {
+router.get("/nouser", (req, res) => {
   
   req.logout((err) => {
     // The callback function for `req.logout()` receives an error object if something goes wrong.
