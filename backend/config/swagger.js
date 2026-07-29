@@ -37,7 +37,7 @@ const options = {
       },
       // Data models/schemas used in API
       schemas: {
-        // User schema - defines the structure of a user object
+        // Defines account schemas 
         account: {
           type: "object", // It's an object
           properties: {
@@ -48,6 +48,7 @@ const options = {
           },
           required: ["username", "password"], // need username and password to create new user
         },
+        // Defines newaccount schemas 
         newaccount: {
           type: "object", // It's an object
           properties: {
@@ -59,6 +60,7 @@ const options = {
           },
           required: ["username", "password", "confirm_password"], // need username and password to create new user
         },
+        // Defines note schemas 
         note: {
           type: "object", // It's an object
           properties: {
@@ -71,6 +73,7 @@ const options = {
           },
           required: ["title"], // name field is required; id is auto-generated
         },
+        //Defines new note schemas
         newNote: {
           type: "object", // It's an object
           properties: {
@@ -81,6 +84,7 @@ const options = {
           },
           required: ["title"], // title is needed to create note;
         },
+        //Defines update note schemas
         updatenote: {
           type: "object", // It's an object
           properties: {
@@ -91,6 +95,7 @@ const options = {
           },
           required: ["title"], // title is neeeded to update;
         },
+        //Defines rename note schemas
         rename: {
           type: "object", // It's an object
           properties: {
@@ -100,6 +105,7 @@ const options = {
           },
           required: ["title"], // an old title and new title are neeeded to update;
         },
+        //Defines delete note schemas
         delete: {
           type: "object", // It's an object
           properties: {

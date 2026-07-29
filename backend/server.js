@@ -11,7 +11,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
 
-//
+//standard express and should run at local host 3001
 
 
 const app = express();
@@ -19,11 +19,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({ origin: "http://127.0.0.1:5500", credentials: true }));
 app.use(
   session({
-    // `secret` is used to sign the session ID cookie. It should be a long, random string kept secret.
-    // It uses the SESSION_SECRET environment variable or a default fallback key.
+    // `secret` for session ID cookie.
+    //  Uses the SESSION_SECRET 
     secret: process.env.SESSION_SECRET || "your_secret_key",
-    // `resave: false` means the session will not be saved back to the session store
-    // if it was never modified during the request. This can help prevent race conditions.
+    
     resave: false,
     // `saveUninitialized: false` means that a session that is new but not modified will not be saved.
     // This is useful for reducing server storage usage and complying with cookie laws.
@@ -32,8 +31,7 @@ app.use(
       // `secure: true` ensures the cookie is only sent over HTTPS. This should be true in production.
       // It's set based on the NODE_ENV environment variable.
       secure: process.env.NODE_ENV === "production",
-      // `maxAge` sets the maximum age of the cookie in milliseconds (here, 7 days).
-      // After this time, the cookie (and session) will expire.
+      // `maxAge` sets the maximum age of the cookie
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       // `sameSite: 'strict'` helps protect against CSRF (Cross-Site Request Forgery) attacks
       // by restricting when the browser sends the cookie.
@@ -44,7 +42,7 @@ app.use(
 
 
 app.use(express.json());
-
+// used swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // load the swagger ui page on the provided endpoint with the swagger spec we have configured
 
 
@@ -54,37 +52,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 connectdb();
 
-// Serve static files from the Frontend folder
+// static front end in order to run well with the passport
 app.use(express.static('../Frontend'));
 
+// main route one for login the to other for note 
 app.use('/note', loginroute);
 app.use('/', apiroute);
 
-// const prompt = inquirer.createPromptModule();
 
-
-
-
-// async function newnotenetry() {
-//     const entry= await prompt([
-//          {
-//             type: "input",
-//             message: "Title",
-            
-//         },
-//         {
-//             type: "input",
-//             message: "Note"
-            
-//         }
-//     ])
-//     console.log("\nResponse received:", response);
-//     const postData = {
-//         text: entry.input
-        
-//       };
-
-// }
 
 
 app.listen(PORT, () =>

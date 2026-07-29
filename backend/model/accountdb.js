@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-
+//account database schema. The notes part is not used.
 const accountschema = new mongoose.Schema({
     username: {
         type: String,

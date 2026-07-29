@@ -1,10 +1,10 @@
  import mongoose from  ("mongoose");
 
-
+// not used 
 const UserSchema = new mongoose.Schema({
   name: String,
   email: String
-  // Embedded posts: these are subdocuments stored inside the user document.
+  
   
 });
 

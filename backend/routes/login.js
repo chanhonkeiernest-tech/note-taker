@@ -5,7 +5,7 @@ import User from '../model/accountdb.js';
 
 const router = express.Router();
 
-
+//bases register, login, logout function. I didn't create a seprate controller for this
 
 /**
  * @swagger

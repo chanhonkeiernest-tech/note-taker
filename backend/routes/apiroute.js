@@ -3,6 +3,7 @@ import control from '../controllers/control.js';
 
 const router = express.Router();
 
+// all the route for adding, editing, renaming and removing note with addion of authenticate middware.
 function ensureAuthenticated(req, res, next) {
   
   if (req.isAuthenticated()) {

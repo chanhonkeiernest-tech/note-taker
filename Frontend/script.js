@@ -9,6 +9,7 @@ var searchQuery ="";
 document.getElementById("title").style.backgroundColor = "red";
 document.getElementById("ase").style.backgroundColor = "red";
 
+//basic login function
 async function login() {
      try {
       // Making a GET request to fetch data from the server
@@ -38,7 +39,7 @@ async function login() {
     }
 }
 
-
+//basic register function
 async function register() {
      try {
       // Making a GET request to fetch data from the server
@@ -78,6 +79,8 @@ async function register() {
       console.error('Error with async/await:', error);
     }
 }
+
+//basic logout function
 async function logout() {
     try{
         const response = await fetch(`http://localhost:3001/note/nouser`);
@@ -94,6 +97,8 @@ async function logout() {
         
         
 }
+
+//a special helper function used to determine whether text in the text area has already been saved. This is to get the content of the note currently being editd.
 async function geteditingtext(){
         try {
             
@@ -108,6 +113,7 @@ async function geteditingtext(){
                 }
 
             }else{
+                
                 if(result.title==null||JSON.stringify(result)==={}){
                     return null
                 }else{
@@ -122,7 +128,7 @@ async function geteditingtext(){
         }
     }
 
-
+//Gets all the notes under created by the user of the session. Upon recieving the list, it will display the result to the frontend.
 async function allnotes() {
     try {
         //console.log("here");
@@ -181,11 +187,12 @@ async function allnotes() {
   }
 }
 
+//Gets a specific note specified in the parameter where the note is also created by the user of the session.
 async function getnotes(name) {
     
 
     try {
-
+        //Since this involves changing the editing area, it will give a warning if the user is at risk of losing their unsaved work.
         event.preventDefault();
         let nochange =false;
         const gettext=await geteditingtext();
@@ -209,7 +216,7 @@ async function getnotes(name) {
         }
 
 
-        //name=name.toString();
+        
         const response = await fetch(url + "/" +name.toString());
         const result = await response.json();
         if(!response.ok){
@@ -235,10 +242,11 @@ async function getnotes(name) {
     }
 }
 
+//Saves user's note. Based on the situation, it will use either the save or update route.
 async function noteentry(errorsource){
 
     try {
-        //event.preventDefault();
+        //If the title entered by the user has already been used by the user, it will ask for a different title. It will also change the parameter and call itself accordingly based on the response code.
         var newtitle=null;
         if(editingtext==null){
             
@@ -260,6 +268,7 @@ async function noteentry(errorsource){
                 }
             }
         }
+        //New note case
         if(editingtext==null&&newtitle!=null){
             
             console.log(document.getElementById("entry").value);
@@ -292,7 +301,7 @@ async function noteentry(errorsource){
                     throw new Error(`HTTP Error: ${response.status}`);
                 } 
                 
-                
+             
             }else{
                 window.alert("new note saved");
                 editingtext=newtitle;
@@ -300,6 +309,7 @@ async function noteentry(errorsource){
                 document.getElementById("notetitle").innerHTML=editingtext;
                 allnotes();
             }
+        //update note case
         }else if (editingtext!=null&&newtitle==null){
             console.log(document.getElementById("entry").value);
             const data = {
@@ -345,7 +355,7 @@ async function noteentry(errorsource){
     }
 
 }
-
+//renames a note 
 async function renamenote(old){
     try{
         event.preventDefault();
@@ -413,7 +423,7 @@ async function renamenote(old){
         console.error("Error in renaming:", error);
     }
 }
-
+//deletes a note chosen by the user of the session.
 async function removenote(name) {
     try {
         event.preventDefault();
@@ -463,7 +473,7 @@ async function removenote(name) {
         console.error("Error fetching note:", error);
     }
 }
-
+//This is used to clear the text area for editing a brand new note
 async function newnote(){
         event.preventDefault();
   
@@ -496,6 +506,8 @@ async function newnote(){
     
     
 }
+
+//The maximum number of notes to be displaied at once is 5, thus a page system is needed to allow the user to view beyond 5.
 async function prevpage(){
     const display = document.getElementById("notes");
     const currentpage = document.getElementById("page").innerHTML;
@@ -549,6 +561,7 @@ async function nextpage(){
     
     
 }
+//Controls how the list is being displayed either by changing the quantifier or the ordering.
 async function sortchange(change) {
     if(change==="title"&&sortoption!==change){
         sortoption=change;
@@ -574,6 +587,7 @@ async function sortchange(change) {
     }
     
 }
+//User can choose to do a note search by entering a query in the search box and activate a search.
 async function search(){
     allnotes();
 
