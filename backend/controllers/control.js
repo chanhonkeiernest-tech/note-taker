@@ -68,7 +68,8 @@ const newnote = async(req, res) => {
         const currentuser=await account.findOne({username : finduser});
         const check = await checkdonotexist(title, currentuser._id);
         //console.log(checkdonotexist(title, currentuser._id)===false);
-        if(title==null||title==""||check===false){
+        if(text.includes("<")||text.includes("//")) res.status(402).json({ error: 'bad entry' });
+        if(title==null||title==""||check===false||title.includes("<")||title.includes("//")){
             res.status(400).json({ error: 'bad title' });
         }else{
             const creatednote = new note({
@@ -96,6 +97,7 @@ const updatenote = async(req, res) => {
         // const resultnote = await note.find({title, user:currentuser._id});
         // console.log(resultnote);
         const check = await checkdonotexist(title,currentuser._id);
+        if(text.includes("<")||text.includes("//")) res.status(402).json({ error: 'bad entry' });
         if(title==null||title==""||check==true){
             res.status(400).json({ error: 'title do not exist' });
         }else{
@@ -128,7 +130,7 @@ const renamenote = async(req, res) => {
         console.log(oldtitle);
         console.log(newtitle);
         if(checkold===true)res.status(501).json({ error: 'title problem' });
-        if(newtitle==null||newtitle==""||checknew===false){
+        if(newtitle==null||newtitle==""||checknew===false||newtitle.includes("<")||newtitle.includes("//")){
             res.status(400).json({ error: 'title problem' });
         }else{
             

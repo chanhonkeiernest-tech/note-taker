@@ -101,7 +101,12 @@ async function geteditingtext(){
             const response = await fetch(url + "/" +editingtext);
             const result = await response.json();
             if(!response.ok){
-                if(409==response.status)location.replace("login.html");
+                if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+                }
+
             }else{
                 if(result.title==null||JSON.stringify(result)==={}){
                     return null
@@ -135,7 +140,10 @@ async function allnotes() {
                 },
             });
          if(!response.ok){
-            if(409==response.status)location.replace("login.html");
+            if(409==response.status){
+                window.alert("you are not login");
+                location.replace("login.html");
+            }
         }
         const result = await response.json();
         //console.log(result);
@@ -205,7 +213,10 @@ async function getnotes(name) {
         const response = await fetch(url + "/" +name.toString());
         const result = await response.json();
         if(!response.ok){
-            if(409==response.status)location.replace("login.html");
+            if(409==response.status){
+                window.alert("you are not login");
+                location.replace("login.html");
+            }
         }
         console.log(JSON.stringify(result));
         if(result.title==null||JSON.stringify(result)==={}){
@@ -268,8 +279,14 @@ async function noteentry(errorsource){
             if (!response.ok) {
                 if(400==response.status)noteentry("badT");
                  
-                if(409==response.status)location.replace("login.html");
-            
+                if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+                }
+                else if(402==response.status){
+                    window.alert("please don't use symbol such as <, //");
+                }
                 else {
                      window.alert("fail to save");
                     throw new Error(`HTTP Error: ${response.status}`);
@@ -305,9 +322,13 @@ async function noteentry(errorsource){
                     noteentry("noT");
                     
                 } else if (409==response.status){
-                    
+                    window.alert("you are not login");
                     location.replace("login.html");
-                }else{
+                    
+                }else if(402==response.status){
+                    window.alert("please don't use symbol such as <, //");
+                }
+                else{
                     window.alert("cannot edit note");
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
@@ -334,7 +355,10 @@ async function renamenote(old){
         // if(errorsource=="badT"){
         //     while(newtitle==null||newtitle=="")newtitle = prompt("This title has already been use please reenter", "");
         // }else{
-             while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
+             while(newtitle==null||newtitle==""){
+                newtitle = prompt("Please enter new note title", "");
+                if(newtitle===null)break;
+             }
         // }
 
         if(newtitle!=null){
@@ -369,9 +393,14 @@ async function renamenote(old){
                     //renamenote(old, "badT");
                 }else if(501==response.status){
                     window.alert("title do not exist");
-                }else if (
-                    409==response.status){
+                }else if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+                
 
+                }else if(402==response.status){
+                    window.alert("please don't use symbol such as <, //");
                 }
                 else throw new Error(`HTTP Error: ${response.status}`);
                 
@@ -417,12 +446,16 @@ async function removenote(name) {
             if(402==response.status){
                 allnotes();
                 window.alert("this note do not exist");
-            }else if (
-                409==response.status){
-
+            }else if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
             }
-            window.alert("remoeve fail");
+            else window.alert("remoeve fail");
+
         }
+        
+
 
 
     } catch (error) {

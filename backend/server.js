@@ -10,6 +10,10 @@ import './passportconfig.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './config/swagger.js';
 
+
+//
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors({ origin: "http://127.0.0.1:5500", credentials: true }));

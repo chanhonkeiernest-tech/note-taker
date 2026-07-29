@@ -11,11 +11,9 @@ const router = express.Router();
  * @swagger
  * /note/newuser:
  *   post:
- *     summary: Register a new user
+ *     summary: Registers a new user
  *     tags:
  *       - Account
- *     security:
- *       - Passport: []
  *     requestBody:
  *       required: true
  *       content:
@@ -50,11 +48,9 @@ router.post("/newuser", async (req, res) => {
  * @swagger
  * /note/user:
  *   post:
- *     summary: Login a user
+ *     summary: Logs in a user
  *     tags:
  *       - Account
- *     security:
- *       - Passport: []
  *     requestBody:
  *       required: true
  *       content:
@@ -78,11 +74,9 @@ router.post("/user", passport.authenticate("local"), (req, res) => {
  * @swagger
  * /note/nouser:
  *   get:
- *     summary: Register a new user
+ *     summary: Logs out the user of the current sesion
  *     tags:
  *       - Account
- *     security:
- *       - Passport: []
  *     responses:
  *       200:
  *         description: OK

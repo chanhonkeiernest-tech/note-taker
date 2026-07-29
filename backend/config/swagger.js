@@ -71,7 +71,7 @@ const options = {
           },
           required: ["title"], // name field is required; id is auto-generated
         },
-        newnote: {
+        newNote: {
           type: "object", // It's an object
           properties: {
             // Fields in the user object
@@ -95,8 +95,8 @@ const options = {
           type: "object", // It's an object
           properties: {
             // Fields in the user object
-            oldtitle: { type: "string", example: "Note 1" }, // User name
-            newtitle: { type: "string", example: "It is now an orange." },
+            oldtitle: { type: "string", example: "note 1" }, // User name
+            newtitle: { type: "string", example: "Note 1" },
           },
           required: ["title"], // an old title and new title are neeeded to update;
         },

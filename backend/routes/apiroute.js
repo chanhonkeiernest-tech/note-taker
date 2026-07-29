@@ -18,23 +18,23 @@ function ensureAuthenticated(req, res, next) {
  * @swagger
  * /note:
  *   get:
- *     summary: get all note belongs to the current user of the session
+ *     summary: Gets all note belonging to the current user of the session. By adding query parameter, one can change the format of the resulting list with sortType being sorting by title or time, order being sorting by ase or ascending or dec decending and title being the search query for the title of the note
  *     tags: [Note]
  *     security:
  *       - Passport: []
  *     parameters:
- *       - in: path
- *         sortype: sort based on    
+ *       - in: query
+ *         name: sortType
  *         schema:
- *           type: String
- *       - in: path
- *         order: sort order
+ *           type: string
+ *       - in: query
+ *         name: order
  *         schema:
- *           type: String
- *       - in: path
- *         name: search query
+ *           type: string
+ *       - in: query
+ *         name: title
  *         schema:
- *           type: String
+ *           type: string
  *     responses:
  *       200:
  *         description: OK
@@ -42,9 +42,9 @@ function ensureAuthenticated(req, res, next) {
 router.get('/note', ensureAuthenticated,control.allnotes);
 /**
  * @swagger
- * /note:
+ * /note/{name}:
  *   get:
- *     summary: get a specific note belongs to the current user of the session
+ *     summary: Gets a specific note belonging to the current user of the session
  *     tags: [Note]
  *     security:
  *       - Passport: []
@@ -53,7 +53,7 @@ router.get('/note', ensureAuthenticated,control.allnotes);
  *         name: name
  *         required: true
  *         schema:
- *           type: String
+ *           type: string
  *     responses:
  *       200:
  *         description: OK
@@ -63,7 +63,7 @@ router.get('/note/:name',ensureAuthenticated,control.getnote);
  * @swagger
  * /note:
  *   post:
- *     summary: create new note
+ *     summary: Creates new note for the current user of the session
  *     tags: [Note]
  *     security:
  *       - Passport: []
@@ -82,7 +82,7 @@ router.post('/note',ensureAuthenticated, control.newnote);
  * @swagger
  * /note:
  *   put:
- *     summary: Update an existing note
+ *     summary: Updates an existing note for the current user of the session
  *     tags: [Note]
  *     security:
  *       - Passport: []
@@ -101,7 +101,7 @@ router.put('/note',ensureAuthenticated, control.updatenote);
  * @swagger
  * /name:
  *   put:
- *     summary: Get user by ID
+ *     summary: Renames the note chosen by the current user of the session
  *     tags: [Note]
  *     security:
  *       - Passport: []
@@ -120,7 +120,7 @@ router.put('/name',ensureAuthenticated, control.renamenote);
  * @swagger
  * /note:
  *   delete:
- *     summary: remove a note
+ *     summary: Removes a note chosen by the current user of the session
  *     tags: [Note]
  *     security:
  *       - Passport: []
