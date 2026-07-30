@@ -11,7 +11,7 @@
 - passport-local
 
 # Required component
-- mongo db it uses the default database of test
+- mongo db > The server will use the default test database to store the data.
 - node js
 
 
