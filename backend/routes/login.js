@@ -5,7 +5,26 @@ import User from '../model/accountdb.js';
 
 const router = express.Router();
 
-router.post("/register", async (req, res) => {
+//bases register, login, logout function. I didn't create a seprate controller for this
+
+/**
+ * @swagger
+ * /note/newuser:
+ *   post:
+ *     summary: Registers a new user
+ *     tags:
+ *       - Account
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/account'
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.post("/newuser", async (req, res) => {
   // Extract the username and password from the request body.
  
   const { username, password, cpassword } = req.body;
@@ -25,8 +44,24 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
-router.post("/login", passport.authenticate("local"), (req, res) => {
+/**
+ * @swagger
+ * /note/user:
+ *   post:
+ *     summary: Logs in a user
+ *     tags:
+ *       - Account
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/newaccount'
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+router.post("/user", passport.authenticate("local"), (req, res) => {
   
   res.json({
     message: "Login successful",
@@ -34,8 +69,21 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
   });
 });
 
+
+/**
+ * @swagger
+ * /note/nouser:
+ *   get:
+ *     summary: Logs out the user of the current sesion
+ *     tags:
+ *       - Account
+ *     responses:
+ *       200:
+ *         description: OK
+ */
+
 // Define a GET route for user logout at '/logout'.
-router.get("/logout", (req, res) => {
+router.get("/nouser", (req, res) => {
   
   req.logout((err) => {
     // The callback function for `req.logout()` receives an error object if something goes wrong.
@@ -46,7 +94,7 @@ router.get("/logout", (req, res) => {
         .json({ message: "Logout failed", error: err.message });
     }
     // If logout is successful, redirect the user to the homepage (or any other appropriate page).
-    res.redirect("/index.html"); // Assuming index.html is your public homepage
+    res.redirect("/login.html"); // Assuming index.html is your public homepage
   });
 });
 

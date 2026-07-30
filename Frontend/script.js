@@ -1,6 +1,7 @@
-const url="http://localhost:3001/note/list";
-const renameurl="http://localhost:3001/note/rename";
-const removeurl="http://localhost:3001/note/remove";
+const origin = window.location.origin; 
+const url=origin+"/note";
+const renameurl=origin+"/name";
+
 var editingtext=null;
 var listofnote=[];
 var sortoption ="title";
@@ -9,12 +10,13 @@ var searchQuery ="";
 document.getElementById("title").style.backgroundColor = "red";
 document.getElementById("ase").style.backgroundColor = "red";
 
+//basic login function
 async function login() {
      try {
       // Making a GET request to fetch data from the server
      const username = document.getElementById("username");
      const password = document.getElementById("password");
-      const response = await fetch(`http://localhost:3001/start/login`, {
+      const response = await fetch(origin+`/note/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username.value, password: password.value }),
@@ -22,7 +24,7 @@ async function login() {
       
       
       if (!response.ok) { //check response
-        throw new Error('Network response was not ok');
+        throw new Error('Fail to login');
       }
   
       // Parse the response body as JSON
@@ -33,11 +35,12 @@ async function login() {
     
     } catch (error) {
       // Handle any errors that occur during the fetch process
+       window.alert("login failed");
       console.error('Error with async/await:', error);
     }
 }
 
-
+//basic register function
 async function register() {
      try {
       // Making a GET request to fetch data from the server
@@ -47,7 +50,7 @@ async function register() {
      if(password.value!=cpassword.value){
         window.alert("password do not match")
      }else{
-        const response = await fetch(`http://localhost:3001/start/register`, {
+        const response = await fetch(origin+`/note/newuser`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.value, password: password.value, cpassword:cpassword.value }),
@@ -62,7 +65,7 @@ async function register() {
       // Parse the response body as JSON
         const data = await response.json();
         if (data.message=="User created"){
-            const response = await fetch(`http://localhost:3001/start/login`, {
+            const response = await fetch(origin+`/note/user`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: username.value, password: password.value }),
@@ -77,26 +80,56 @@ async function register() {
       console.error('Error with async/await:', error);
     }
 }
+
+//basic logout function
+async function logout() {
+    try{
+        const response = await fetch(origin+`/note/nouser`);
+        // const result = await response.json(); 
+        console.log(response.ok) ;
+         if (!response.ok) { //check response
+            throw new Error('fail to logout');
+        }else{
+            location.replace("login.html");
+        }
+    }catch(error){
+        console.error('Error with async/await and fail to logout:', error);
+    }
+        
+        
+}
+
+//a special helper function used to determine whether text in the text area has already been saved. This is to get the content of the note currently being editd.
 async function geteditingtext(){
         try {
             
             if(editingtext==null)return null;
             const response = await fetch(url + "/" +editingtext);
             const result = await response.json();
-                
-            if(result.title==null||JSON.stringify(result)==={}){
-                return null
+            if(!response.ok){
+                if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+                }
+
             }else{
                 
-                return result.text.toString();   
+                if(result.title==null||JSON.stringify(result)==={}){
+                    return null
+                }else{
+                
+                    return result.text.toString();   
+                }
             }
+            
             return null
         } catch (error) {
             return null;
         }
     }
 
-
+//Gets all the notes under created by the user of the session. Upon recieving the list, it will display the result to the frontend.
 async function allnotes() {
     try {
         //console.log("here");
@@ -113,9 +146,14 @@ async function allnotes() {
                     'Content-Type': 'application/json'  
                 },
             });
-        
+         if(!response.ok){
+            if(409==response.status){
+                window.alert("you are not login");
+                location.replace("login.html");
+            }
+        }
         const result = await response.json();
-        console.log(result);
+        //console.log(result);
         listofnote=result;
         const display = document.getElementById("notes");
        
@@ -150,11 +188,12 @@ async function allnotes() {
   }
 }
 
+//Gets a specific note specified in the parameter where the note is also created by the user of the session.
 async function getnotes(name) {
     
 
     try {
-
+        //Since this involves changing the editing area, it will give a warning if the user is at risk of losing their unsaved work.
         event.preventDefault();
         let nochange =false;
         const gettext=await geteditingtext();
@@ -178,9 +217,15 @@ async function getnotes(name) {
         }
 
 
-        //name=name.toString();
+        
         const response = await fetch(url + "/" +name.toString());
         const result = await response.json();
+        if(!response.ok){
+            if(409==response.status){
+                window.alert("you are not login");
+                location.replace("login.html");
+            }
+        }
         console.log(JSON.stringify(result));
         if(result.title==null||JSON.stringify(result)==={}){
             window.alert("cannot find note");
@@ -198,10 +243,11 @@ async function getnotes(name) {
     }
 }
 
+//Saves user's note. Based on the situation, it will use either the save or update route.
 async function noteentry(errorsource){
 
     try {
-        //event.preventDefault();
+        //If the title entered by the user has already been used by the user, it will ask for a different title. It will also change the parameter and call itself accordingly based on the response code.
         var newtitle=null;
         if(editingtext==null){
             
@@ -223,6 +269,7 @@ async function noteentry(errorsource){
                 }
             }
         }
+        //New note case
         if(editingtext==null&&newtitle!=null){
             
             console.log(document.getElementById("entry").value);
@@ -240,10 +287,22 @@ async function noteentry(errorsource){
             const result = await response.json();
             
             if (!response.ok) {
-                if(400<=response.status<500)noteentry("badT");
-                else throw new Error(`HTTP Error: ${response.status}`);
+                if(400==response.status)noteentry("badT");
+                 
+                if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+                }
+                else if(402==response.status){
+                    window.alert("please don't use symbol such as <, //");
+                }
+                else {
+                     window.alert("fail to save");
+                    throw new Error(`HTTP Error: ${response.status}`);
+                } 
                 
-                
+             
             }else{
                 window.alert("new note saved");
                 editingtext=newtitle;
@@ -251,6 +310,7 @@ async function noteentry(errorsource){
                 document.getElementById("notetitle").innerHTML=editingtext;
                 allnotes();
             }
+        //update note case
         }else if (editingtext!=null&&newtitle==null){
             console.log(document.getElementById("entry").value);
             const data = {
@@ -267,12 +327,20 @@ async function noteentry(errorsource){
             const result = await response.json();
 
             if (!response.ok) {
-                if(400<=response.status<500){
+                if(400==response.status){
                     editingtext=null;
                     document.getElementById("notetitle").innerHTML=``;
                     noteentry("noT");
                     
-                }else{
+                } else if (409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+                }else if(402==response.status){
+                    window.alert("please don't use symbol such as <, //");
+                }
+                else{
+                    window.alert("cannot edit note");
                     throw new Error(`HTTP Error: ${response.status}`);
                 }
                 
@@ -288,7 +356,7 @@ async function noteentry(errorsource){
     }
 
 }
-
+//renames a note 
 async function renamenote(old){
     try{
         event.preventDefault();
@@ -298,7 +366,10 @@ async function renamenote(old){
         // if(errorsource=="badT"){
         //     while(newtitle==null||newtitle=="")newtitle = prompt("This title has already been use please reenter", "");
         // }else{
-             while(newtitle==null||newtitle=="")newtitle = prompt("Please enter new note title", "");
+             while(newtitle==null||newtitle==""){
+                newtitle = prompt("Please enter new note title", "");
+                if(newtitle===null)break;
+             }
         // }
 
         if(newtitle!=null){
@@ -333,6 +404,14 @@ async function renamenote(old){
                     //renamenote(old, "badT");
                 }else if(501==response.status){
                     window.alert("title do not exist");
+                }else if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+                
+
+                }else if(402==response.status){
+                    window.alert("please don't use symbol such as <, //");
                 }
                 else throw new Error(`HTTP Error: ${response.status}`);
                 
@@ -345,7 +424,7 @@ async function renamenote(old){
         console.error("Error in renaming:", error);
     }
 }
-
+//deletes a note chosen by the user of the session.
 async function removenote(name) {
     try {
         event.preventDefault();
@@ -354,7 +433,7 @@ async function removenote(name) {
         const data = {
                 title: name.toString()
             }
-        const response = await fetch(removeurl, {
+        const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'  
@@ -375,15 +454,27 @@ async function removenote(name) {
             window.alert("note removed");
 
         }else{
-            window.alert("remoeve fail");
+            if(402==response.status){
+                allnotes();
+                window.alert("this note do not exist");
+            }else if(409==response.status){
+                    window.alert("you are not login");
+                    location.replace("login.html");
+                    
+            }
+            else window.alert("remoeve fail");
+
         }
+        
+
 
 
     } catch (error) {
+        window.alert("remoeve fail");
         console.error("Error fetching note:", error);
     }
 }
-
+//This is used to clear the text area for editing a brand new note
 async function newnote(){
         event.preventDefault();
   
@@ -416,6 +507,8 @@ async function newnote(){
     
     
 }
+
+//The maximum number of notes to be displaied at once is 5, thus a page system is needed to allow the user to view beyond 5.
 async function prevpage(){
     const display = document.getElementById("notes");
     const currentpage = document.getElementById("page").innerHTML;
@@ -469,6 +562,7 @@ async function nextpage(){
     
     
 }
+//Controls how the list is being displayed either by changing the quantifier or the ordering.
 async function sortchange(change) {
     if(change==="title"&&sortoption!==change){
         sortoption=change;
@@ -494,6 +588,7 @@ async function sortchange(change) {
     }
     
 }
+//User can choose to do a note search by entering a query in the search box and activate a search.
 async function search(){
     allnotes();
 

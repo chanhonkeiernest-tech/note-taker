@@ -1,0 +1,21 @@
+*{
+     background-color:beige;
+
+}
+.login{
+    text-align: center;
+}
+.register{
+    text-align: center;
+}
+.label{
+    text-align: center;
+    font-weight: 700;
+    font-size: 30px;
+
+}
+.pagename{
+    text-align: center;
+    font-weight: 700;
+     font-size: 30px;
+}

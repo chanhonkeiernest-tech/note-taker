@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+//schema for storing note with it referencing its creator
 const noteschema = new mongoose.Schema({
     title: {
         type: String,

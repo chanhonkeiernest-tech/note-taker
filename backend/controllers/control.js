@@ -1,5 +1,9 @@
 import note from '../model/notedb.js';
 import account from '../model/accountdb.js';
+
+
+
+//Function for handling fetching all the notes with the option of changing the query for searching speceific note, changing the search by option and changing the ordering of the list
 const allnotes=async (req, res) => {
     try{
         const {
@@ -12,13 +16,13 @@ const allnotes=async (req, res) => {
         } = req.query;
         console.log(title);
         const filter={};
-      
+        //Creates a filter based on the specified parameters
         if(title){
             filter.title=RegExp(title, "i");;
         }
         const currentuser=await account.findOne({username : req.user.username});  
         filter.user=currentuser._id;
-        console.log(filter);
+        
   
         // const sortType=req.params.sortoption;
         // const order=req.params.sortorder;
@@ -34,7 +38,7 @@ const allnotes=async (req, res) => {
     }
 };
 
-
+//This fucntion gets specific note based on the entered parameter.
 const getnote=async (req, res) => {
     try{
         const entry=req.params.name;
@@ -55,7 +59,7 @@ const getnote=async (req, res) => {
 };
     
 
-
+//This fucntion creats new note 
 const newnote = async(req, res) => {
     try{
         const finduser=req.user.username;
@@ -63,8 +67,10 @@ const newnote = async(req, res) => {
         const {title, text} = req.body;
         const currentuser=await account.findOne({username : finduser});
         const check = await checkdonotexist(title, currentuser._id);
-        //console.log(checkdonotexist(title, currentuser._id)===false);
-        if(title==null||title==""||check===false){
+        
+        //Make sure that the content does not contain any special symbols that might cause issues.
+        if(text.includes("<")||text.includes("//")) res.status(402).json({ error: 'bad entry' });
+        if(title==null||title==""||check===false||title.includes("<")||title.includes("//")){
             res.status(400).json({ error: 'bad title' });
         }else{
             const creatednote = new note({
@@ -84,14 +90,16 @@ const newnote = async(req, res) => {
     }
 };
 
+//This fucntion updates the content of a specific note
 const updatenote = async(req, res) => {
     try{
         const {title, text} = req.body;
         console.log(req.user.username);
         const currentuser=await account.findOne({username : req.user.username});
-        // const resultnote = await note.find({title, user:currentuser._id});
-        // console.log(resultnote);
+        
+        //checks whether or not the note exists under the user who reqested the update
         const check = await checkdonotexist(title,currentuser._id);
+        if(text.includes("<")||text.includes("//")) res.status(402).json({ error: 'bad entry' });
         if(title==null||title==""||check==true){
             res.status(400).json({ error: 'title do not exist' });
         }else{
@@ -112,7 +120,7 @@ const updatenote = async(req, res) => {
     
 
 };
-
+//This fucntion changes the specific note name or title
 const renamenote = async(req, res) => {
     try{
         const {oldtitle, newtitle} = req.body;
@@ -121,10 +129,10 @@ const renamenote = async(req, res) => {
         const checkold = await checkdonotexist(oldtitle, currentuser._id);
         const checknew = await checkdonotexist(newtitle, currentuser._id);
         
-        console.log(oldtitle);
-        console.log(newtitle);
+        
+        //make sure that the note which the user requested to rename actually exists and the new title has not existed yet.
         if(checkold===true)res.status(501).json({ error: 'title problem' });
-        if(newtitle==null||newtitle==""||checknew===false){
+        if(newtitle==null||newtitle==""||checknew===false||newtitle.includes("<")||newtitle.includes("//")){
             res.status(400).json({ error: 'title problem' });
         }else{
             
@@ -146,12 +154,15 @@ const renamenote = async(req, res) => {
     }
     
 };
-
+//This fucntion removes a specific note
 const removenote =async (req, res) => {
     try{
         const {title} = req.body;
-        //console.log("check");
+        
         const currentuser=await account.findOne({username : req.user.username});
+
+
+        //Checks whether the note for removal exists under this user who requested it.
          const check = await checkdonotexist(title, currentuser._id);
          if(check==true) res.status(402).json("no such  note to delete");
         if(title==null||title==""){
@@ -174,7 +185,7 @@ const any = async(req, res) => {
     res.json("list")
 };
 
-
+// This is a helper function used to determine wehther or not this user has already created a note with this title.
 async function checkdonotexist (entry, id){
     if(entry==null)return false;
     const resultnote = await note.exists({title: entry, user:id});
