@@ -33,3 +33,8 @@ The Swagger UI `http://localhost:Your Port/api-docs` was set up for better under
 I had a hard time looking for errors due to some errors not resulting in crashes.
 Swagger was also very hard to debug.
 It took me a long time to figure out how to implement those buttons for each of the notes listed in the list. 
+
+# What I learnt
+- How to create RESTful design
+- Debugging tricks in js
+- Creating swagger UI for query parameter
