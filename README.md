@@ -11,7 +11,7 @@
 - passport-local
 
 # Required component
-- mongo db > The server will use the default test database to store the data.
+- mongo db 
 - node js
 
 
@@ -25,6 +25,7 @@ You should see a login page.
 Since the database is clean and has no record within it, start with registering a new account.
 
 # Note
+The server will use the default test database to store the data.
 Error handling: When the user is not login and tries to interact with the note system, it will redirect user back to login page.
 The Swagger UI `http://localhost:Your Port/api-docs` was set up for better understanding the API CRUD.
 
