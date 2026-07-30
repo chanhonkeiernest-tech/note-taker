@@ -1,5 +1,6 @@
-const url="http://localhost:3001/note";
-const renameurl="http://localhost:3001/name";
+const origin = window.location.origin; 
+const url=origin+"/note";
+const renameurl=origin+"/name";
 
 var editingtext=null;
 var listofnote=[];
@@ -15,7 +16,7 @@ async function login() {
       // Making a GET request to fetch data from the server
      const username = document.getElementById("username");
      const password = document.getElementById("password");
-      const response = await fetch(`http://localhost:3001/note/user`, {
+      const response = await fetch(origin+`/note/user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username.value, password: password.value }),
@@ -49,7 +50,7 @@ async function register() {
      if(password.value!=cpassword.value){
         window.alert("password do not match")
      }else{
-        const response = await fetch(`http://localhost:3001/note/newuser`, {
+        const response = await fetch(origin+`/note/newuser`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.value, password: password.value, cpassword:cpassword.value }),
@@ -64,7 +65,7 @@ async function register() {
       // Parse the response body as JSON
         const data = await response.json();
         if (data.message=="User created"){
-            const response = await fetch(`http://localhost:3001/note/user`, {
+            const response = await fetch(origin+`/note/user`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username: username.value, password: password.value }),
@@ -83,7 +84,7 @@ async function register() {
 //basic logout function
 async function logout() {
     try{
-        const response = await fetch(`http://localhost:3001/note/nouser`);
+        const response = await fetch(origin+`/note/nouser`);
         // const result = await response.json(); 
         console.log(response.ok) ;
          if (!response.ok) { //check response
