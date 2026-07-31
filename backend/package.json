@@ -8,7 +8,7 @@
     "start": "node server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Hon Kei Ernest Chan",
   "license": "ISC",
   "type": "module",
   "dependencies": {
